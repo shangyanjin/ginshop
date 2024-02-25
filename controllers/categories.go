@@ -4,8 +4,8 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/Sirupsen/logrus"
 	"ginshop/models"
+	"github.com/Sirupsen/logrus"
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
 )
@@ -42,7 +42,7 @@ func CategoryGet(c *gin.Context) {
 func CategoryIndex(c *gin.Context) {
 	db := models.GetDB()
 	var categories []models.Category
-	db.Order("parent_id nulls first, ord asc").Find(&categories)
+	db.Order(" parent_id IS NULL, parent_id, ord ASC").Find(&categories)
 	h := DefaultH(c)
 	h["Title"] = "Product categories"
 	h["Categories"] = categories
