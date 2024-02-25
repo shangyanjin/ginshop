@@ -42,7 +42,7 @@ body {
   padding: 30px 0;
   margin-top: 40px;
   border-top: 1px solid $divider;
-  background: #3D7462;
+  background: #262626;
 
   #footer-menu {
     .footer-menu-header {
@@ -184,7 +184,7 @@ textarea.parsley-error {
   header {
     z-index: 99;
     position: relative;
-    background: #631d2d;
+    background: #333333;
 
     li {
       list-style: none;
@@ -391,7 +391,7 @@ textarea.parsley-error {
   }
 
   .navbar {
-    background: #722134;
+    background: #999999;
     padding: 0 1rem;
 
     &.fixed-top+.navbar-bottom-padding {
@@ -528,7 +528,7 @@ a {
 
   .carousel-inner {
     .carousel-item {
-      height: 700px;
+      height: 450px;
       background-size: cover;
       background-position: center center;
 
