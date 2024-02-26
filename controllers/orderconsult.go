@@ -8,14 +8,15 @@ import (
 	"path"
 	"strconv"
 
-	"github.com/Sirupsen/logrus"
 	"ginshop/config"
 	"ginshop/models"
+
 	"github.com/gin-gonic/gin"
+	"github.com/sirupsen/logrus"
 	gomail "gopkg.in/gomail.v2"
 )
 
-//OrderConsultPost handles GET /orderconsult route
+// OrderConsultPost handles GET /orderconsult route
 func OrderConsultPost(c *gin.Context) {
 	orderconsult := models.OrderConsult{}
 	c.ShouldBind(&orderconsult)

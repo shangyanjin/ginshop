@@ -9,11 +9,12 @@ import (
 	"ginshop/config"
 	"ginshop/controllers"
 	"ginshop/models"
-	"github.com/Sirupsen/logrus"
+
 	"github.com/claudiu/gocron"
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-contrib/sessions/cookie"
 	"github.com/gin-gonic/gin"
+	"github.com/sirupsen/logrus"
 	csrf "github.com/utrack/gin-csrf"
 )
 
@@ -185,7 +186,7 @@ func main() {
 	router.Run(":8085")
 }
 
-//initLogger initializes logrus logger with some defaults
+// initLogger initializes logrus logger with some defaults
 func initLogger() {
 	logrus.SetFormatter(&logrus.TextFormatter{})
 	if gin.Mode() == gin.DebugMode {

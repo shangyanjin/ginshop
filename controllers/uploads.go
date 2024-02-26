@@ -9,12 +9,13 @@ import (
 	"path/filepath"
 	"time"
 
-	"github.com/Sirupsen/logrus"
 	"ginshop/config"
+
 	"github.com/gin-gonic/gin"
+	"github.com/sirupsen/logrus"
 )
 
-//UploadPost handles POST /upload route
+// UploadPost handles POST /upload route
 func UploadPost(c *gin.Context) {
 	err := c.Request.ParseMultipartForm(32 << 20) // ~32MB
 	if err != nil {
@@ -40,7 +41,7 @@ func UploadPost(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"uploaded": true, "url": uri})
 }
 
-//saveFile saves file to disc and returns its relative uri
+// saveFile saves file to disc and returns its relative uri
 func saveFile(fh *multipart.FileHeader, f multipart.File) (string, error) {
 	fileExt := filepath.Ext(fh.Filename)
 	newName := fmt.Sprint(time.Now().Unix()) + fileExt //unique file name ;D

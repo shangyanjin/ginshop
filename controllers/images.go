@@ -3,12 +3,13 @@ package controllers
 import (
 	"net/http"
 
-	"github.com/Sirupsen/logrus"
 	"ginshop/models"
+
 	"github.com/gin-gonic/gin"
+	"github.com/sirupsen/logrus"
 )
 
-//ImageCreate handles POST /admin/new_image route
+// ImageCreate handles POST /admin/new_image route
 func ImageCreate(c *gin.Context) {
 	db := models.GetDB()
 
@@ -43,7 +44,7 @@ func ImageCreate(c *gin.Context) {
 	c.JSON(200, image)
 }
 
-//ImageDelete handles POST /admin/images/:id/delete route
+// ImageDelete handles POST /admin/images/:id/delete route
 func ImageDelete(c *gin.Context) {
 	image := models.Image{}
 	db := models.GetDB()

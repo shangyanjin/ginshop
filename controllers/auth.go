@@ -7,14 +7,15 @@ import (
 
 	"strings"
 
-	"github.com/Sirupsen/logrus"
 	"ginshop/models"
+
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
+	"github.com/sirupsen/logrus"
 	"golang.org/x/crypto/bcrypt"
 )
 
-//SignInGet handles GET /signin route
+// SignInGet handles GET /signin route
 func SignInGet(c *gin.Context) {
 	h := DefaultH(c)
 	h["Title"] = "Sign in"
@@ -24,7 +25,7 @@ func SignInGet(c *gin.Context) {
 	c.HTML(http.StatusOK, "auth/signin", h)
 }
 
-//SignInPost handles POST /signin route, authenticates user
+// SignInPost handles POST /signin route, authenticates user
 func SignInPost(c *gin.Context) {
 	session := sessions.Default(c)
 	login := models.Login{}
@@ -53,7 +54,7 @@ func SignInPost(c *gin.Context) {
 	c.Redirect(http.StatusFound, panelEntryURL(user))
 }
 
-//SignUpGet handles GET /signup route
+// SignUpGet handles GET /signup route
 func SignUpGet(c *gin.Context) {
 	h := DefaultH(c)
 	h["Title"] = "Регистрация в системе"
@@ -63,7 +64,7 @@ func SignUpGet(c *gin.Context) {
 	c.HTML(http.StatusOK, "auth/signup", h)
 }
 
-//SignUpPost handles POST /signup route, creates new user
+// SignUpPost handles POST /signup route, creates new user
 func SignUpPost(c *gin.Context) {
 	session := sessions.Default(c)
 	register := models.Register{}
@@ -110,7 +111,7 @@ func SignUpPost(c *gin.Context) {
 	return
 }
 
-//SignoutGet handles GET /signout route
+// SignoutGet handles GET /signout route
 func SignoutGet(c *gin.Context) {
 	session := sessions.Default(c)
 	session.Delete(userIDKey)
@@ -118,7 +119,7 @@ func SignoutGet(c *gin.Context) {
 	c.Redirect(http.StatusSeeOther, "/")
 }
 
-//ManageGet handles GET /:role/manage route
+// ManageGet handles GET /:role/manage route
 func ManageGet(c *gin.Context) {
 	user := activeUser(c)
 	h := DefaultH(c)
@@ -139,7 +140,7 @@ func ManageGet(c *gin.Context) {
 	c.HTML(http.StatusOK, tmpl, h)
 }
 
-//ManagePost handles POST /:role/manage route, updates user credentials
+// ManagePost handles POST /:role/manage route, updates user credentials
 func ManagePost(c *gin.Context) {
 	session := sessions.Default(c)
 	db := models.GetDB()

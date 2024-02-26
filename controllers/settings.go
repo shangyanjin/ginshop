@@ -3,13 +3,14 @@ package controllers
 import (
 	"net/http"
 
-	"github.com/Sirupsen/logrus"
 	"ginshop/models"
+
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
+	"github.com/sirupsen/logrus"
 )
 
-//SettingIndex handles GET /admin/settings route
+// SettingIndex handles GET /admin/settings route
 func SettingIndex(c *gin.Context) {
 	db := models.GetDB()
 	var settings []models.Setting
@@ -20,7 +21,7 @@ func SettingIndex(c *gin.Context) {
 	c.HTML(http.StatusOK, "settings/index", h)
 }
 
-//SettingNew handles GET /admin/new_setting route
+// SettingNew handles GET /admin/new_setting route
 func SettingNew(c *gin.Context) {
 	h := DefaultH(c)
 	h["Title"] = "New Setting"
@@ -31,7 +32,7 @@ func SettingNew(c *gin.Context) {
 	c.HTML(http.StatusOK, "settings/form", h)
 }
 
-//SettingCreate handles POST /admin/new_setting route
+// SettingCreate handles POST /admin/new_setting route
 func SettingCreate(c *gin.Context) {
 	db := models.GetDB()
 	setting := models.Setting{}
@@ -51,7 +52,7 @@ func SettingCreate(c *gin.Context) {
 	c.Redirect(http.StatusFound, "/admin/settings")
 }
 
-//SettingEdit handles GET /admin/settings/:id/edit route
+// SettingEdit handles GET /admin/settings/:id/edit route
 func SettingEdit(c *gin.Context) {
 	db := models.GetDB()
 	setting := models.Setting{}
@@ -69,7 +70,7 @@ func SettingEdit(c *gin.Context) {
 	c.HTML(http.StatusOK, "settings/form", h)
 }
 
-//SettingUpdate handles POST /admin/settings/:id/edit route
+// SettingUpdate handles POST /admin/settings/:id/edit route
 func SettingUpdate(c *gin.Context) {
 	setting := models.Setting{}
 	db := models.GetDB()
@@ -88,7 +89,7 @@ func SettingUpdate(c *gin.Context) {
 	c.Redirect(http.StatusFound, "/admin/settings")
 }
 
-//SettingDelete handles POST /admin/settings/:id/delete route
+// SettingDelete handles POST /admin/settings/:id/delete route
 func SettingDelete(c *gin.Context) {
 	setting := models.Setting{}
 	db := models.GetDB()

@@ -4,13 +4,14 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/Sirupsen/logrus"
 	"ginshop/models"
+
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
+	"github.com/sirupsen/logrus"
 )
 
-//ProductGet handles GET /p/:slug route
+// ProductGet handles GET /p/:slug route
 func ProductGet(c *gin.Context) {
 	db := models.GetDB()
 	product := models.Product{}
@@ -39,7 +40,7 @@ func ProductGet(c *gin.Context) {
 	c.HTML(http.StatusOK, "products/show", h)
 }
 
-//ProductIndex handles GET /admin/products route
+// ProductIndex handles GET /admin/products route
 func ProductIndex(c *gin.Context) {
 	db := models.GetDB()
 	var products []models.Product
@@ -50,7 +51,7 @@ func ProductIndex(c *gin.Context) {
 	c.HTML(http.StatusOK, "products/index", h)
 }
 
-//ProductNew handles GET /admin/new_product route
+// ProductNew handles GET /admin/new_product route
 func ProductNew(c *gin.Context) {
 	h := DefaultH(c)
 	h["Title"] = "New product"
@@ -62,7 +63,7 @@ func ProductNew(c *gin.Context) {
 	c.HTML(http.StatusOK, "products/form", h)
 }
 
-//ProductCreate handles POST /admin/new_product route
+// ProductCreate handles POST /admin/new_product route
 func ProductCreate(c *gin.Context) {
 	db := models.GetDB()
 	product := models.Product{}
@@ -82,7 +83,7 @@ func ProductCreate(c *gin.Context) {
 	c.Redirect(http.StatusFound, "/admin/products")
 }
 
-//ProductEdit handles GET /admin/products/:id/edit route
+// ProductEdit handles GET /admin/products/:id/edit route
 func ProductEdit(c *gin.Context) {
 	db := models.GetDB()
 	product := models.Product{}
@@ -100,7 +101,7 @@ func ProductEdit(c *gin.Context) {
 	c.HTML(http.StatusOK, "products/form", h)
 }
 
-//ProductUpdate handles POST /admin/products/:id/edit route
+// ProductUpdate handles POST /admin/products/:id/edit route
 func ProductUpdate(c *gin.Context) {
 	product := models.Product{}
 	db := models.GetDB()
@@ -122,7 +123,7 @@ func ProductUpdate(c *gin.Context) {
 	c.Redirect(http.StatusFound, "/admin/products")
 }
 
-//ProductDelete handles POST /admin/products/:id/delete route
+// ProductDelete handles POST /admin/products/:id/delete route
 func ProductDelete(c *gin.Context) {
 	product := models.Product{}
 	db := models.GetDB()

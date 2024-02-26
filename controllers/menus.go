@@ -3,13 +3,14 @@ package controllers
 import (
 	"net/http"
 
-	"github.com/Sirupsen/logrus"
 	"ginshop/models"
+
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
+	"github.com/sirupsen/logrus"
 )
 
-//MenuIndex handles GET /admin/menus route
+// MenuIndex handles GET /admin/menus route
 func MenuIndex(c *gin.Context) {
 	db := models.GetDB()
 
@@ -21,7 +22,7 @@ func MenuIndex(c *gin.Context) {
 	c.HTML(http.StatusOK, "menus/index", h)
 }
 
-//MenuNew handles GET /admin/new_menu route
+// MenuNew handles GET /admin/new_menu route
 func MenuNew(c *gin.Context) {
 	h := DefaultH(c)
 
@@ -34,7 +35,7 @@ func MenuNew(c *gin.Context) {
 	c.HTML(http.StatusOK, "menus/form", h)
 }
 
-//MenuCreate handles POST /admin/new_menu route
+// MenuCreate handles POST /admin/new_menu route
 func MenuCreate(c *gin.Context) {
 	db := models.GetDB()
 	menu := models.Menu{}
@@ -53,7 +54,7 @@ func MenuCreate(c *gin.Context) {
 	c.Redirect(http.StatusFound, "/admin/menus")
 }
 
-//MenuEdit handles GET /admin/menu/:id/edit route
+// MenuEdit handles GET /admin/menu/:id/edit route
 func MenuEdit(c *gin.Context) {
 	db := models.GetDB()
 	menu := models.Menu{}
@@ -73,7 +74,7 @@ func MenuEdit(c *gin.Context) {
 	c.HTML(http.StatusOK, "menus/form", h)
 }
 
-//MenuUpdate handles POST /admin/menu/:id/edit route
+// MenuUpdate handles POST /admin/menu/:id/edit route
 func MenuUpdate(c *gin.Context) {
 	menu := models.Menu{}
 	db := models.GetDB()
@@ -93,7 +94,7 @@ func MenuUpdate(c *gin.Context) {
 	c.Redirect(http.StatusFound, "/admin/menus")
 }
 
-//MenuDelete handles POST /admin/menu/:id/delete route
+// MenuDelete handles POST /admin/menu/:id/delete route
 func MenuDelete(c *gin.Context) {
 	menu := models.Menu{}
 	db := models.GetDB()

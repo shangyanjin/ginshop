@@ -4,13 +4,14 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/Sirupsen/logrus"
 	"ginshop/models"
+
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
+	"github.com/sirupsen/logrus"
 )
 
-//PageGet handles GET /pages/:id route
+// PageGet handles GET /pages/:id route
 func PageGet(c *gin.Context) {
 	db := models.GetDB()
 	page := models.Page{}
@@ -36,7 +37,7 @@ func PageGet(c *gin.Context) {
 	c.HTML(http.StatusOK, "pages/show", h)
 }
 
-//PageIndex handles GET /admin/pages route
+// PageIndex handles GET /admin/pages route
 func PageIndex(c *gin.Context) {
 	db := models.GetDB()
 	var pages []models.Page
@@ -47,7 +48,7 @@ func PageIndex(c *gin.Context) {
 	c.HTML(http.StatusOK, "pages/index", h)
 }
 
-//PageNew handles GET /admin/new_page route
+// PageNew handles GET /admin/new_page route
 func PageNew(c *gin.Context) {
 	h := DefaultH(c)
 	h["Title"] = "New page"
@@ -59,7 +60,7 @@ func PageNew(c *gin.Context) {
 	c.HTML(http.StatusOK, "pages/form", h)
 }
 
-//PageCreate handles POST /admin/new_page route
+// PageCreate handles POST /admin/new_page route
 func PageCreate(c *gin.Context) {
 	db := models.GetDB()
 	page := models.Page{}
@@ -79,7 +80,7 @@ func PageCreate(c *gin.Context) {
 	c.Redirect(http.StatusFound, "/admin/pages")
 }
 
-//PageEdit handles GET /admin/pages/:id/edit route
+// PageEdit handles GET /admin/pages/:id/edit route
 func PageEdit(c *gin.Context) {
 	db := models.GetDB()
 	page := models.Page{}
@@ -97,7 +98,7 @@ func PageEdit(c *gin.Context) {
 	c.HTML(http.StatusOK, "pages/form", h)
 }
 
-//PageUpdate handles POST /admin/pages/:id/edit route
+// PageUpdate handles POST /admin/pages/:id/edit route
 func PageUpdate(c *gin.Context) {
 	page := models.Page{}
 	db := models.GetDB()
@@ -116,7 +117,7 @@ func PageUpdate(c *gin.Context) {
 	c.Redirect(http.StatusFound, "/admin/pages")
 }
 
-//PageDelete handles POST /admin/pages/:id/delete route
+// PageDelete handles POST /admin/pages/:id/delete route
 func PageDelete(c *gin.Context) {
 	page := models.Page{}
 	db := models.GetDB()

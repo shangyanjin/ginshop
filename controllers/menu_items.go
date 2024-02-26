@@ -4,13 +4,14 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/Sirupsen/logrus"
 	"ginshop/models"
+
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
+	"github.com/sirupsen/logrus"
 )
 
-//MenuItemIndex handles GET /admin/menu/:id route
+// MenuItemIndex handles GET /admin/menu/:id route
 func MenuItemIndex(c *gin.Context) {
 	db := models.GetDB()
 	menuID := c.Param("id")
@@ -24,7 +25,7 @@ func MenuItemIndex(c *gin.Context) {
 	c.HTML(http.StatusOK, "menu_items/index", h)
 }
 
-//MenuItemNew handles GET /admin/menu/:id/new_item route
+// MenuItemNew handles GET /admin/menu/:id/new_item route
 func MenuItemNew(c *gin.Context) {
 	h := DefaultH(c)
 	menuID := c.Param("id")
@@ -38,7 +39,7 @@ func MenuItemNew(c *gin.Context) {
 	c.HTML(http.StatusOK, "menu_items/form", h)
 }
 
-//MenuItemCreate handles POST /admin/menu/:id/new_item route
+// MenuItemCreate handles POST /admin/menu/:id/new_item route
 func MenuItemCreate(c *gin.Context) {
 	db := models.GetDB()
 	menuID := c.Param("id")
@@ -61,7 +62,7 @@ func MenuItemCreate(c *gin.Context) {
 	c.Redirect(http.StatusFound, fmt.Sprintf("/admin/menu/%s", menuID))
 }
 
-//MenuItemEdit handles GET /admin/menu/:id/edit/:itemid route
+// MenuItemEdit handles GET /admin/menu/:id/edit/:itemid route
 func MenuItemEdit(c *gin.Context) {
 	db := models.GetDB()
 	item := models.MenuItem{}
@@ -81,7 +82,7 @@ func MenuItemEdit(c *gin.Context) {
 	c.HTML(http.StatusOK, "menu_items/form", h)
 }
 
-//MenuItemUpdate handles POST /admin/menu/:id/edit/:itemid route
+// MenuItemUpdate handles POST /admin/menu/:id/edit/:itemid route
 func MenuItemUpdate(c *gin.Context) {
 	item := models.MenuItem{}
 	db := models.GetDB()
@@ -106,7 +107,7 @@ func MenuItemUpdate(c *gin.Context) {
 	c.Redirect(http.StatusFound, fmt.Sprintf("/admin/menu/%s", menuID))
 }
 
-//MenuItemDelete handles POST /admin/menu/:id/delete/:itemid route
+// MenuItemDelete handles POST /admin/menu/:id/delete/:itemid route
 func MenuItemDelete(c *gin.Context) {
 	item := models.MenuItem{}
 	db := models.GetDB()

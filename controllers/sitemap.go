@@ -5,13 +5,14 @@ import (
 	"path"
 	"time"
 
-	"github.com/Sirupsen/logrus"
 	"ginshop/config"
 	"ginshop/models"
+
 	"github.com/denisbakhtin/sitemap"
+	"github.com/sirupsen/logrus"
 )
 
-//CreateXMLSitemap creates xml sitemap for search engines, and saves in public/sitemap folder
+// CreateXMLSitemap creates xml sitemap for search engines, and saves in public/sitemap folder
 func CreateXMLSitemap() {
 	logrus.Info("Starting XML sitemap generation")
 	folder := path.Join(config.GetConfig().Public, "sitemap")

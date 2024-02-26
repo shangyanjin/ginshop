@@ -9,15 +9,16 @@ import (
 	"path"
 	"strconv"
 
-	"github.com/Sirupsen/logrus"
 	"ginshop/config"
 	"ginshop/models"
+
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
+	"github.com/sirupsen/logrus"
 	gomail "gopkg.in/gomail.v2"
 )
 
-//OrderGet handles GET /admin/orders/:id route
+// OrderGet handles GET /admin/orders/:id route
 func OrderGet(c *gin.Context) {
 	db := models.GetDB()
 	order := models.Order{}
@@ -46,7 +47,7 @@ func OrderGet(c *gin.Context) {
 	c.HTML(http.StatusOK, tmpl, h)
 }
 
-//OrderIndex handles GET /admin/orders route
+// OrderIndex handles GET /admin/orders route
 func OrderIndex(c *gin.Context) {
 	db := models.GetDB()
 	var orders []models.Order
@@ -71,7 +72,7 @@ func OrderIndex(c *gin.Context) {
 	c.HTML(http.StatusOK, tmpl, h)
 }
 
-//OrderNew handles GET /new_order route
+// OrderNew handles GET /new_order route
 func OrderNew(c *gin.Context) {
 	h := DefaultH(c)
 	h["Title"] = "Order Checkout"
@@ -83,7 +84,7 @@ func OrderNew(c *gin.Context) {
 	c.HTML(http.StatusOK, "orders/form", h)
 }
 
-//OrderCreate handles POST /new_order route
+// OrderCreate handles POST /new_order route
 func OrderCreate(c *gin.Context) {
 	db := models.GetDB()
 	order := models.Order{}
@@ -119,7 +120,7 @@ func OrderCreate(c *gin.Context) {
 	c.Redirect(http.StatusFound, fmt.Sprintf("/confirm_order/%d", order.ID))
 }
 
-//OrderConfirm handles GET /confirm_order/:id route
+// OrderConfirm handles GET /confirm_order/:id route
 func OrderConfirm(c *gin.Context) {
 	db := models.GetDB()
 	order := models.Order{}
@@ -130,7 +131,7 @@ func OrderConfirm(c *gin.Context) {
 	c.HTML(http.StatusOK, "orders/confirm", h)
 }
 
-//OrderDelete handles POST /admin/orders/:id/delete route
+// OrderDelete handles POST /admin/orders/:id/delete route
 func OrderDelete(c *gin.Context) {
 	order := models.Order{}
 	db := models.GetDB()

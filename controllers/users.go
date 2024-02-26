@@ -3,13 +3,14 @@ package controllers
 import (
 	"net/http"
 
-	"github.com/Sirupsen/logrus"
 	"ginshop/models"
+
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
+	"github.com/sirupsen/logrus"
 )
 
-//UserIndex handles GET /admin/users route
+// UserIndex handles GET /admin/users route
 func UserIndex(c *gin.Context) {
 	db := models.GetDB()
 	var users []models.User
@@ -20,7 +21,7 @@ func UserIndex(c *gin.Context) {
 	c.HTML(http.StatusOK, "users/index", h)
 }
 
-//UserNew handles GET /admin/new_user route
+// UserNew handles GET /admin/new_user route
 func UserNew(c *gin.Context) {
 	h := DefaultH(c)
 	h["Title"] = "New user"
@@ -31,7 +32,7 @@ func UserNew(c *gin.Context) {
 	c.HTML(http.StatusOK, "users/form", h)
 }
 
-//UserCreate handles POST /admin/new_user route
+// UserCreate handles POST /admin/new_user route
 func UserCreate(c *gin.Context) {
 	user := models.User{}
 	db := models.GetDB()
@@ -53,7 +54,7 @@ func UserCreate(c *gin.Context) {
 	c.Redirect(http.StatusFound, "/admin/users")
 }
 
-//UserEdit handles GET /admin/users/:id/edit route
+// UserEdit handles GET /admin/users/:id/edit route
 func UserEdit(c *gin.Context) {
 	db := models.GetDB()
 	user := models.User{}
@@ -71,7 +72,7 @@ func UserEdit(c *gin.Context) {
 	c.HTML(http.StatusOK, "users/form", h)
 }
 
-//UserUpdate handles POST /admin/users/:id/edit route
+// UserUpdate handles POST /admin/users/:id/edit route
 func UserUpdate(c *gin.Context) {
 	user := models.User{}
 	db := models.GetDB()
@@ -91,7 +92,7 @@ func UserUpdate(c *gin.Context) {
 	c.Redirect(http.StatusFound, "/admin/users")
 }
 
-//UserDelete handles POST /admin/users/:id/delete route
+// UserDelete handles POST /admin/users/:id/delete route
 func UserDelete(c *gin.Context) {
 	db := models.GetDB()
 	user := models.User{}

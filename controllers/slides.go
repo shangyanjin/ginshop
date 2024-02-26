@@ -3,13 +3,14 @@ package controllers
 import (
 	"net/http"
 
-	"github.com/Sirupsen/logrus"
 	"ginshop/models"
+
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
+	"github.com/sirupsen/logrus"
 )
 
-//SlideIndex handles GET /admin/slides route
+// SlideIndex handles GET /admin/slides route
 func SlideIndex(c *gin.Context) {
 	db := models.GetDB()
 	var slides []models.Slide
@@ -20,7 +21,7 @@ func SlideIndex(c *gin.Context) {
 	c.HTML(http.StatusOK, "slides/index", h)
 }
 
-//SlideNew handles GET /admin/new_slide route
+// SlideNew handles GET /admin/new_slide route
 func SlideNew(c *gin.Context) {
 	h := DefaultH(c)
 	h["Title"] = "New slide"
@@ -32,7 +33,7 @@ func SlideNew(c *gin.Context) {
 	c.HTML(http.StatusOK, "slides/form", h)
 }
 
-//SlideCreate handles slide /admin/new_slide route
+// SlideCreate handles slide /admin/new_slide route
 func SlideCreate(c *gin.Context) {
 	db := models.GetDB()
 
@@ -75,7 +76,7 @@ func SlideCreate(c *gin.Context) {
 	c.Redirect(http.StatusFound, "/admin/slides")
 }
 
-//SlideEdit handles GET /admin/slides/:id/edit route
+// SlideEdit handles GET /admin/slides/:id/edit route
 func SlideEdit(c *gin.Context) {
 	db := models.GetDB()
 	slide := models.Slide{}
@@ -93,7 +94,7 @@ func SlideEdit(c *gin.Context) {
 	c.HTML(http.StatusOK, "slides/form", h)
 }
 
-//SlideUpdate handles slide /admin/slides/:id/edit route
+// SlideUpdate handles slide /admin/slides/:id/edit route
 func SlideUpdate(c *gin.Context) {
 	slide := models.Slide{}
 	db := models.GetDB()
@@ -130,7 +131,7 @@ func SlideUpdate(c *gin.Context) {
 	c.Redirect(http.StatusFound, "/admin/slides")
 }
 
-//SlideDelete handles slide /admin/slides/:id/delete route
+// SlideDelete handles slide /admin/slides/:id/delete route
 func SlideDelete(c *gin.Context) {
 	slide := models.Slide{}
 	db := models.GetDB()

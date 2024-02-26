@@ -8730,7 +8730,7 @@ a:hover {
         .catalog .card.card-body:hover p {
           color: #0f5e44; }
         .catalog .card.card-body:hover h5 {
-          color: #083224; }
+          color: #222222; }
         .catalog .card.card-body:hover .svg-wrapper {
           filter: invert(70%) brightness(104%) contrast(97%); }
       .catalog .card.card-body .unit-left {
@@ -8766,7 +8766,7 @@ a:hover {
         text-overflow: ellipsis; }
 
 .bg-dark {
-  background-color: #083224 !important;
+  background-color: #222222 !important;
   color: #fff !important; }
 
 .bg-yellow {

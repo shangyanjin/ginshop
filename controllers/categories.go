@@ -5,12 +5,13 @@ import (
 	"strings"
 
 	"ginshop/models"
-	"github.com/Sirupsen/logrus"
+
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
+	"github.com/sirupsen/logrus"
 )
 
-//CategoryGet handles GET /c/:slug route
+// CategoryGet handles GET /c/:slug route
 func CategoryGet(c *gin.Context) {
 	db := models.GetDB()
 	category := models.Category{}
@@ -38,7 +39,7 @@ func CategoryGet(c *gin.Context) {
 	c.HTML(http.StatusOK, "categories/show", h)
 }
 
-//CategoryIndex handles GET /admin/categories route
+// CategoryIndex handles GET /admin/categories route
 func CategoryIndex(c *gin.Context) {
 	db := models.GetDB()
 	var categories []models.Category
@@ -49,7 +50,7 @@ func CategoryIndex(c *gin.Context) {
 	c.HTML(http.StatusOK, "categories/index", h)
 }
 
-//CategoryNew handles GET /admin/new_category route
+// CategoryNew handles GET /admin/new_category route
 func CategoryNew(c *gin.Context) {
 	h := DefaultH(c)
 	h["Title"] = "New product category"
@@ -60,7 +61,7 @@ func CategoryNew(c *gin.Context) {
 	c.HTML(http.StatusOK, "categories/form", h)
 }
 
-//CategoryCreate handles POST /admin/new_category route
+// CategoryCreate handles POST /admin/new_category route
 func CategoryCreate(c *gin.Context) {
 	db := models.GetDB()
 	category := models.Category{}
@@ -82,7 +83,7 @@ func CategoryCreate(c *gin.Context) {
 	c.Redirect(http.StatusFound, "/admin/categories")
 }
 
-//CategoryEdit handles GET /admin/categories/:id/edit route
+// CategoryEdit handles GET /admin/categories/:id/edit route
 func CategoryEdit(c *gin.Context) {
 	db := models.GetDB()
 	category := models.Category{}
@@ -100,7 +101,7 @@ func CategoryEdit(c *gin.Context) {
 	c.HTML(http.StatusOK, "categories/form", h)
 }
 
-//CategoryUpdate handles POST /admin/categories/:id/edit route
+// CategoryUpdate handles POST /admin/categories/:id/edit route
 func CategoryUpdate(c *gin.Context) {
 	category := models.Category{}
 	db := models.GetDB()
@@ -122,7 +123,7 @@ func CategoryUpdate(c *gin.Context) {
 	c.Redirect(http.StatusFound, "/admin/categories")
 }
 
-//CategoryDelete handles POST /admin/categories/:id/delete route
+// CategoryDelete handles POST /admin/categories/:id/delete route
 func CategoryDelete(c *gin.Context) {
 	category := models.Category{}
 	db := models.GetDB()
