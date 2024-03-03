@@ -5,13 +5,13 @@ import (
 	"net/http"
 	"net/url"
 
-	"ginshop/config"
-	"ginshop/models"
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
+	"goweb/config"
+	"goweb/models"
 )
 
-//ContextData stores in gin context the common data, such as user info...
+// ContextData stores in gin context the common data, such as user info...
 func ContextData() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		session := sessions.Default(c)
@@ -30,7 +30,7 @@ func ContextData() gin.HandlerFunc {
 	}
 }
 
-//AuthRequired grants access to authenticated users with a 'role' role
+// AuthRequired grants access to authenticated users with a 'role' role
 func AuthRequired(role string) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		grant := false

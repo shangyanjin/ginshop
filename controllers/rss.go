@@ -4,25 +4,25 @@ import (
 	"fmt"
 	"time"
 
-	"ginshop/config"
-	"ginshop/models"
 	"github.com/gin-gonic/gin"
 	"github.com/gorilla/feeds"
+	"goweb/config"
+	"goweb/models"
 )
 
-//RssGet handles GET /rss route
+// RssGet handles GET /rss route
 func RssGet(c *gin.Context) {
 	now := time.Now()
 	domain := config.GetConfig().Domain
 	db := models.GetDB()
 
 	feed := &feeds.Feed{
-		Title:       "GinShop skeleton",
+		Title:       "goweb skeleton",
 		Link:        &feeds.Link{Href: domain},
 		Description: "A gin-powered e-shop boilerplate",
-		Author:      &feeds.Author{Name: "GinShop Inc.", Email: getSetting("contact_email")},
+		Author:      &feeds.Author{Name: "goweb Inc.", Email: getSetting("contact_email")},
 		Created:     now,
-		Copyright:   "All rights reserved © GinShop",
+		Copyright:   "All rights reserved © goweb",
 	}
 
 	feed.Items = make([]*feeds.Item, 0)
@@ -34,7 +34,7 @@ func RssGet(c *gin.Context) {
 			Id:      fmt.Sprintf("%s/pages/%d", domain, pages[i].ID),
 			Title:   pages[i].Title,
 			Link:    &feeds.Link{Href: fmt.Sprintf("%s/pages/%d", domain, pages[i].ID)},
-			Author:  &feeds.Author{Name: "GinShop Inc."},
+			Author:  &feeds.Author{Name: "goweb Inc."},
 			Created: now,
 		})
 	}

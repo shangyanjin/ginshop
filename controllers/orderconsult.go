@@ -8,8 +8,8 @@ import (
 	"path"
 	"strconv"
 
-	"ginshop/config"
-	"ginshop/models"
+	"goweb/config"
+	"goweb/models"
 
 	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
@@ -35,7 +35,7 @@ func notifyAdminOfOrderConsult(c *gin.Context, orderconsult *models.OrderConsult
 		domain := config.GetConfig().Domain
 		tmpl := template.New("").Funcs(getFuncMap())
 		workingdir, _ := os.Getwd()
-		tmpl, _ = tmpl.ParseFiles(path.Join(workingdir, "views", "emails", "admin_orderconsult.gohtml"))
+		tmpl, _ = tmpl.ParseFiles(path.Join(workingdir, "default", "emails", "admin_orderconsult.gohtml"))
 		if err := tmpl.Lookup("emails/admin_orderconsult").Execute(&b, gin.H{"OrderConsult": orderconsult}); err != nil {
 			logrus.Error(err)
 			return

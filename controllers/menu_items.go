@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"net/http"
 
-	"ginshop/models"
+	"goweb/models"
 
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"

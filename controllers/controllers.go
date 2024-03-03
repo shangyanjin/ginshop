@@ -10,29 +10,29 @@ import (
 	"strconv"
 	"time"
 
-	"ginshop/config"
-	"ginshop/models"
 	"github.com/gin-gonic/gin"
 	csrf "github.com/utrack/gin-csrf"
+	"goweb/config"
+	"goweb/models"
 )
 
 const userIDKey = "UserID"
 
 var tmpl *template.Template
 
-//Option represents select option entry
+// Option represents select option entry
 type Option struct {
 	Value string
 	Text  string
 }
 
-//Breadcrumb represents a breadcrumb
+// Breadcrumb represents a breadcrumb
 type Breadcrumb struct {
 	URL   string
 	Title string
 }
 
-//DefaultH returns common to all pages template data
+// DefaultH returns common to all pages template data
 func DefaultH(c *gin.Context) gin.H {
 	return gin.H{
 		"Title":           "", //page title:w
@@ -43,10 +43,10 @@ func DefaultH(c *gin.Context) gin.H {
 	}
 }
 
-//LoadTemplates loads templates from views directory to gin engine
+// LoadTemplates loads templates from default directory to gin engine
 func LoadTemplates(router *gin.Engine) {
 	router.SetFuncMap(getFuncMap())
-	router.LoadHTMLGlob("views/**/*")
+	router.LoadHTMLGlob("templates/default/**/*")
 }
 
 func getFuncMap() template.FuncMap {
@@ -88,19 +88,19 @@ func getFuncMap() template.FuncMap {
 	}
 }
 
-//atouint converts string to uint, returns 0 if error
+// atouint converts string to uint, returns 0 if error
 func atouint(s string) uint {
 	i, _ := strconv.ParseUint(s, 10, 32)
 	return uint(i)
 }
 
-//atouint64 converts string to uint64, returns 0 if error
+// atouint64 converts string to uint64, returns 0 if error
 func atouint64(s string) uint64 {
 	i, _ := strconv.ParseUint(s, 10, 64)
 	return i
 }
 
-//isActiveLink checks uri against currently active (uri, or nil) and returns "active" if they are equal
+// isActiveLink checks uri against currently active (uri, or nil) and returns "active" if they are equal
 func isActiveLink(c *gin.Context, uri string) string {
 	if c != nil && c.Request.RequestURI == uri {
 		return "active"
@@ -108,12 +108,12 @@ func isActiveLink(c *gin.Context, uri string) string {
 	return ""
 }
 
-//formatDateTime prints timestamp in human format
+// formatDateTime prints timestamp in human format
 func formatDateTime(t time.Time) string {
 	return fmt.Sprintf("%d-%02d-%02d %02d:%02d:%02d", t.Year(), t.Month(), t.Day(), t.Hour(), t.Minute(), t.Second())
 }
 
-//stringInSlice returns true if value is in list slice
+// stringInSlice returns true if value is in list slice
 func stringInSlice(value string, list []string) bool {
 	for i := range list {
 		if value == list[i] {
@@ -123,12 +123,12 @@ func stringInSlice(value string, list []string) bool {
 	return false
 }
 
-//now returns current timestamp
+// now returns current timestamp
 func now() time.Time {
 	return time.Now()
 }
 
-//activeUserEmail returns currently authenticated user email
+// activeUserEmail returns currently authenticated user email
 func activeUserEmail(c *gin.Context) string {
 	user := activeUser(c)
 	if user != nil {
@@ -137,7 +137,7 @@ func activeUserEmail(c *gin.Context) string {
 	return ""
 }
 
-//activeUserName returns currently authenticated user name
+// activeUserName returns currently authenticated user name
 func activeUserName(c *gin.Context) string {
 	user := activeUser(c)
 	if user != nil {
@@ -146,7 +146,7 @@ func activeUserName(c *gin.Context) string {
 	return ""
 }
 
-//activeUserID returns currently authenticated user ID
+// activeUserID returns currently authenticated user ID
 func activeUserID(c *gin.Context) uint64 {
 	user := activeUser(c)
 	if user != nil {
@@ -155,7 +155,7 @@ func activeUserID(c *gin.Context) uint64 {
 	return 0
 }
 
-//activeUserRole returns currently authenticated user role
+// activeUserRole returns currently authenticated user role
 func activeUser(c *gin.Context) *models.User {
 	if c != nil {
 		u, _ := c.Get("User")
@@ -166,7 +166,7 @@ func activeUser(c *gin.Context) *models.User {
 	return nil
 }
 
-//isUserAuthenticated returns true is user is authenticated
+// isUserAuthenticated returns true is user is authenticated
 func isUserAuthenticated(c *gin.Context) bool {
 	user := activeUser(c)
 	return user != nil
@@ -187,17 +187,17 @@ func isCustomer(c *gin.Context) bool {
 	return user != nil && user.IsCustomer()
 }
 
-//SignUpEnabled returns true if sign up is enabled by config
+// SignUpEnabled returns true if sign up is enabled by config
 func SignUpEnabled() bool {
 	return config.GetConfig().SignupEnabled
 }
 
-//noescape unescapes html content
+// noescape unescapes html content
 func noescape(content string) template.HTML {
 	return template.HTML(content)
 }
 
-//top level menu items
+// top level menu items
 func topLevelMenuItems(menuID uint64) []models.MenuItem {
 	db := models.GetDB()
 	var menus []models.MenuItem
@@ -205,7 +205,7 @@ func topLevelMenuItems(menuID uint64) []models.MenuItem {
 	return menus
 }
 
-//footer menu items
+// footer menu items
 func footerMenuItems() []models.MenuItem {
 	db := models.GetDB()
 	menu := models.Menu{}
@@ -215,7 +215,7 @@ func footerMenuItems() []models.MenuItem {
 	return menus
 }
 
-//refEqUint checks if *uint64 equals uint64
+// refEqUint checks if *uint64 equals uint64
 func refEqUint(ref *uint64, val uint64) bool {
 	if ref == nil {
 		return false
@@ -223,7 +223,7 @@ func refEqUint(ref *uint64, val uint64) bool {
 	return *ref == val
 }
 
-//selectableCategories returns a slice of categories available for selection by products
+// selectableCategories returns a slice of categories available for selection by products
 func selectableCategories() []models.Category {
 	db := models.GetDB()
 	var categories []models.Category
@@ -264,7 +264,7 @@ func userRole(role string) string {
 	}
 }
 
-//getSetting returns a site setting by its code or empty string
+// getSetting returns a site setting by its code or empty string
 func getSetting(code string) string {
 	return models.GetSetting(code)
 }
@@ -314,7 +314,7 @@ func domain() string {
 	return config.GetConfig().Domain
 }
 
-//panelEntryPoint returns an entry point for authenticated users, same as panelEntryURL but with context
+// panelEntryPoint returns an entry point for authenticated users, same as panelEntryURL but with context
 func panelEntryPoint(c *gin.Context) string {
 	user := activeUser(c)
 	url := "/"
@@ -334,7 +334,7 @@ func panelEntryPoint(c *gin.Context) string {
 	return url
 }
 
-//panelEntryURL returns an entry point for authenticated users
+// panelEntryURL returns an entry point for authenticated users
 func panelEntryURL(user models.User) string {
 	url := "/"
 	switch user.Role {

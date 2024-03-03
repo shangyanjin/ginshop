@@ -5,11 +5,11 @@ import (
 	"net/http"
 	"strings"
 
-	"ginshop/models"
 	"github.com/gin-gonic/gin"
+	"goweb/models"
 )
 
-//SearchGet handles GET /search?search= route
+// SearchGet handles GET /search?search= route
 func SearchGet(c *gin.Context) {
 	db := models.GetDB()
 	var products []models.Product

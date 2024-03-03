@@ -3,15 +3,15 @@ package controllers
 import (
 	"net/http"
 
-	"ginshop/models"
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
+	"goweb/models"
 )
 
-//CartType represents cart hash map, stored in session cookie
+// CartType represents cart hash map, stored in session cookie
 type CartType map[uint64]bool
 
-//CartGet handles GET /cart route
+// CartGet handles GET /cart route
 func CartGet(c *gin.Context) {
 	db := models.GetDB()
 	var products []models.Product
@@ -23,7 +23,7 @@ func CartGet(c *gin.Context) {
 	c.HTML(http.StatusOK, "cart/show", h)
 }
 
-//CartAdd handles POST /cart/add/:id route
+// CartAdd handles POST /cart/add/:id route
 func CartAdd(c *gin.Context) {
 	session := sessions.Default(c)
 	cart := getCart(c)
@@ -34,7 +34,7 @@ func CartAdd(c *gin.Context) {
 	c.JSON(200, len(cart))
 }
 
-//CartProcess handles POST /cart/process route
+// CartProcess handles POST /cart/process route
 func CartProcess(c *gin.Context) {
 	db := models.GetDB()
 	cart := getCart(c)
@@ -44,7 +44,7 @@ func CartProcess(c *gin.Context) {
 	c.Redirect(http.StatusFound, "/")
 }
 
-//CartDelete handles POST /cart/delete/:id route
+// CartDelete handles POST /cart/delete/:id route
 func CartDelete(c *gin.Context) {
 	session := sessions.Default(c)
 	cart := getCart(c)

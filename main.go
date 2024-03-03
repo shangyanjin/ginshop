@@ -4,18 +4,16 @@ import (
 	"encoding/gob"
 	"flag"
 	"fmt"
-	"net/http"
-
-	"ginshop/config"
-	"ginshop/controllers"
-	"ginshop/models"
-
 	"github.com/claudiu/gocron"
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-contrib/sessions/cookie"
 	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
 	csrf "github.com/utrack/gin-csrf"
+	"goweb/config"
+	"goweb/controllers"
+	"goweb/models"
+	"net/http"
 )
 
 func main() {
@@ -29,7 +27,7 @@ func main() {
 
 	initLogger()
 	config.LoadConfig()
-	models.SetDB(config.GetConnectionString())
+	models.InitSqlite()
 	models.AutoMigrate()
 	//models.SeedDB()
 	if *seed == "true" {
@@ -44,13 +42,13 @@ func main() {
 	// logger and recovery (crash-free) middleware
 	router := gin.Default()
 	router.StaticFS("/public", http.Dir(config.PublicPath())) //better use nginx to serve assets (Cache-Control, Etag, fast gzip, etc)
-	controllers.LoadTemplates(router)                         //load views
+	controllers.LoadTemplates(router)                         //load default
 
 	//setup sessions
 	conf := config.GetConfig()
 	store := cookie.NewStore([]byte(conf.SessionSecret))
 	store.Options(sessions.Options{Path: "/", HttpOnly: true, MaxAge: 7 * 86400}) //Also set Secure: true if using SSL, you should though
-	router.Use(sessions.Sessions("ginshop-session", store))
+	router.Use(sessions.Sessions("goweb-session", store))
 	router.Use(controllers.ContextData())
 
 	//setup csrf protection

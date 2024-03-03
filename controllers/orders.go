@@ -9,8 +9,8 @@ import (
 	"path"
 	"strconv"
 
-	"ginshop/config"
-	"ginshop/models"
+	"goweb/config"
+	"goweb/models"
 
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
@@ -156,7 +156,7 @@ func notifyAdminOfOrder(c *gin.Context, order *models.Order) {
 		domain := config.GetConfig().Domain
 		tmpl := template.New("").Funcs(getFuncMap())
 		workingdir, _ := os.Getwd()
-		tmpl, _ = tmpl.ParseFiles(path.Join(workingdir, "views", "emails", "admin_order.gohtml"))
+		tmpl, _ = tmpl.ParseFiles(path.Join(workingdir, "default", "emails", "admin_order.gohtml"))
 		if err := tmpl.Lookup("emails/admin_order").Execute(&b, gin.H{"Order": order}); err != nil {
 			logrus.Error(err)
 			return
@@ -194,7 +194,7 @@ func notifyClientOfOrder(c *gin.Context, order *models.Order) {
 		domain := config.GetConfig().Domain
 		tmpl := template.New("").Funcs(getFuncMap())
 		workingdir, _ := os.Getwd()
-		tmpl, _ = tmpl.ParseFiles(path.Join(workingdir, "views", "emails", "order.gohtml"))
+		tmpl, _ = tmpl.ParseFiles(path.Join(workingdir, "default", "emails", "order.gohtml"))
 		if err := tmpl.Lookup("emails/order").Execute(&b, gin.H{"Order": order}); err != nil {
 			logrus.Error(err)
 			return
