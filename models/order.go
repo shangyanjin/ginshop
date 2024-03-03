@@ -19,7 +19,7 @@ type Order struct {
 	Phone      string    `form:"phone"`
 	Comment    string    `form:"comment"`
 	ProductID uint64 `gorm:"index" binding:"-" form:"-"`
-	Products   []Product `binding:"-" form:"-"`
+	Products   []Product `gorm:"many2many:order_products;" binding:"-" form:"-"`
 }
 
 //BeforeCreate gorm hook

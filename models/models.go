@@ -6,6 +6,9 @@ import (
 	"github.com/fiam/gounidecode/unidecode"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
+	"gorm.io/gorm/logger"
+	"log"
+	"os"
 	"regexp"
 	"strings"
 	"time"
@@ -38,13 +41,32 @@ func SetDB(connection string) {
 		conf.Database.Port,
 		conf.Database.Name,
 	)
+ 	// Create a logger that outputs logs to standard output device and set log level to Info
+	newLogger := logger.New(
+		log.New(os.Stdout, "\r\n", log.LstdFlags), // io.Writer
+		logger.Config{
+			SlowThreshold:             time.Second, // Slow query threshold is 1 second
+			LogLevel:                  logger.Info, // Log level is set to Info
+			IgnoreRecordNotFoundError: true,        // Ignore ErrRecordNotFound error
+			Colorful:                  true,        // Enable colorful printing
+		},
+	)
 
-	// Open a connection to the database using GORM
-	db, err = gorm.Open(mysql.Open(dsn), &gorm.Config{})
+	// Open database connection using custom log configuration
+	db, err = gorm.Open(mysql.New(mysql.Config{
+		DSN:                       dsn,   // Data Source Name
+		DefaultStringSize:         256,   // Default size for string fields
+		DisableDatetimePrecision:  true,  // Disable time precision, not supported in MySQL versions prior to 5.6
+		DontSupportRenameIndex:    true,  // Use drop and recreate method for renaming indexes, not supported in MySQL 5.7 and earlier versions
+		DontSupportRenameColumn:   true,  // Use `change` for renaming columns, not supported in MySQL 8 and earlier versions
+		SkipInitializeWithVersion: false, // Automatically configure based on current MySQL version
+	}), &gorm.Config{
+		Logger: newLogger, // Pass the logger configuration to GORM
+	})
+
 	if err != nil {
-		panic(err.Error())
+		panic(err)
 	}
-
 
 
 }
