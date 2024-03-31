@@ -43,16 +43,14 @@ func InitSqlite() {
 	)
 
 	// Open SQLite3 database connection using custom log configuration
-	db, err = gorm.Open(sqlite.Open("sql.db"), &gorm.Config{
+	db, err = gorm.Open(sqlite.Open("sqlite.db"), &gorm.Config{
 		Logger: newLogger, // Pass the logger configuration to GORM
 	})
 
 	if err != nil {
 		panic(err)
 	}
- }
-
-
+}
 
 func InitMysql() {
 	var err error
@@ -98,8 +96,6 @@ func InitMysql() {
 
 }
 
-
-
 func InitPostgres() *gorm.DB {
 	conf := config.GetConfig()
 	sqlInfo := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=disable",
@@ -115,8 +111,6 @@ func InitPostgres() *gorm.DB {
 	fmt.Println("🚀 Connected Successfully to the Database")
 	return db
 }
-
-
 
 // GetDB returns database handler
 func GetDB() *gorm.DB {
