@@ -6,6 +6,7 @@ import (
 
 	"ginshop/config"
 	"ginshop/models"
+
 	"github.com/gin-gonic/gin"
 	"github.com/gorilla/feeds"
 )
@@ -13,7 +14,7 @@ import (
 // RssGet handles GET /rss route
 func RssGet(c *gin.Context) {
 	now := time.Now()
-	domain := config.GetConfig().Domain
+	domain := config.Config.Server.Domain
 	db := models.GetDB()
 
 	feed := &feeds.Feed{

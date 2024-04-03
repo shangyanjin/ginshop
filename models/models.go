@@ -3,17 +3,18 @@ package models
 import (
 	"fmt"
 	"ginshop/config"
+	"log"
+	"os"
+	"regexp"
+	"strings"
+	"time"
+
 	"github.com/fiam/gounidecode/unidecode"
 	"gorm.io/driver/mysql"
 	"gorm.io/driver/postgres"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
-	"log"
-	"os"
-	"regexp"
-	"strings"
-	"time"
 )
 
 // Model is a tuned version of gorm.Model
@@ -59,13 +60,12 @@ func InitMysql() {
 	//if err != nil {
 	//	panic(err.Error())
 	//}
-	conf := config.GetConfig()
 	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8&parseTime=True&loc=Local",
-		conf.Database.User,
-		conf.Database.Password,
-		conf.Database.Host,
-		conf.Database.Port,
-		conf.Database.Db,
+		config.Config.Database.User,
+		config.Config.Database.Password,
+		config.Config.Database.Host,
+		config.Config.Database.Port,
+		config.Config.Database.Db,
 	)
 	// Create a logger that outputs logs to standard output device and set log level to Info
 	newLogger := logger.New(
@@ -97,13 +97,12 @@ func InitMysql() {
 }
 
 func InitPostgres() *gorm.DB {
-	conf := config.GetConfig()
 	sqlInfo := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=disable",
-		conf.Database.Host,
-		conf.Database.Port,
-		conf.Database.User,
-		conf.Database.Password,
-		conf.Database.Db)
+		config.Config.Database.Host,
+		config.Config.Database.Port,
+		config.Config.Database.User,
+		config.Config.Database.Password,
+		config.Config.Database.Db)
 
 	db, err := gorm.Open(postgres.Open(sqlInfo), &gorm.Config{})
 	log.Println(err)

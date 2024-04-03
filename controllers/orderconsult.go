@@ -32,7 +32,7 @@ func notifyAdminOfOrderConsult(c *gin.Context, orderconsult *models.OrderConsult
 	go func() {
 		var b bytes.Buffer
 
-		domain := config.GetConfig().Domain
+		domain := config.Config.Server.Domain
 		tmpl := template.New("").Funcs(getFuncMap())
 		workingdir, _ := os.Getwd()
 		tmpl, _ = tmpl.ParseFiles(path.Join(workingdir, "default", "emails", "admin_orderconsult.gohtml"))
@@ -41,7 +41,7 @@ func notifyAdminOfOrderConsult(c *gin.Context, orderconsult *models.OrderConsult
 			return
 		}
 
-		smtp := config.GetConfig().SMTP
+		smtp := config.Config.Server.SMTP
 		msg := gomail.NewMessage()
 		msg.SetHeader("From", smtp.From)
 		msg.SetHeader("To", getSetting("order_email"))

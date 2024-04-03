@@ -12,6 +12,7 @@ import (
 
 	"ginshop/config"
 	"ginshop/models"
+
 	"github.com/gin-gonic/gin"
 	csrf "github.com/utrack/gin-csrf"
 )
@@ -189,7 +190,7 @@ func isCustomer(c *gin.Context) bool {
 
 // SignUpEnabled returns true if sign up is enabled by config
 func SignUpEnabled() bool {
-	return config.GetConfig().SignupEnabled
+	return config.Config.Server.SignUpEnabled
 }
 
 // noescape unescapes html content
@@ -290,11 +291,11 @@ func productTitles() []string {
 }
 
 func cssVersion() string {
-	return fileVersion(path.Join(config.GetConfig().Public, "assets", "main.css"))
+	return fileVersion(path.Join(config.Config.Server.Public, "assets", "main.css"))
 }
 
 func jsVersion() string {
-	return fileVersion(path.Join(config.GetConfig().Public, "assets", "application.js"))
+	return fileVersion(path.Join(config.Config.Server.Public, "assets", "application.js"))
 }
 
 func fileVersion(path string) string {
@@ -311,7 +312,7 @@ func timeToString(t time.Time) string {
 }
 
 func domain() string {
-	return config.GetConfig().Domain
+	return config.Config.Server.Domain
 }
 
 // panelEntryPoint returns an entry point for authenticated users, same as panelEntryURL but with context

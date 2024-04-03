@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"ginshop/config"
 	"ginshop/controllers"
+	"ginshop/middlewares"
 	"ginshop/models"
 	"net/http"
 
@@ -27,7 +28,7 @@ func main() {
 	gin.SetMode(*mode)
 
 	initLogger()
-	config.LoadConfig()
+	config.InitConfig()
 	models.InitMysql()
 	//models.InitSqlite()
 	models.AutoMigrate()
@@ -46,20 +47,19 @@ func main() {
 	router.StaticFS("/public", http.Dir(config.PublicPath())) //better use nginx to serve assets (Cache-Control, Etag, fast gzip, etc)
 	controllers.LoadTemplates(router)                         //load default
 	//setup sessions
-	conf := config.GetConfig()
 	//setup sessions
-	secretKey := conf.Server.SessionSecret
+	secretKey := config.Config.Server.SessionSecret
 	if len(secretKey) < 1 {
 		secretKey = "default-secret-key" //default secret key
 	}
 	store := memstore.NewStore([]byte(secretKey))
 	store.Options(sessions.Options{Path: "/", HttpOnly: true, MaxAge: 7 * 86400}) //Also set Secure: true if using SSL, you should though
 	router.Use(sessions.Sessions("ginshop-session", store))
-	router.Use(controllers.ContextData())
+	router.Use(middlewares.ContextData())
 
 	//setup csrf protection
 	router.Use(csrf.Middleware(csrf.Options{
-		Secret: conf.Server.SessionSecret,
+		Secret: secretKey,
 		ErrorFunc: func(c *gin.Context) {
 			logrus.Error("CSRF token mismatch")
 			controllers.ShowErrorPage(c, 400, fmt.Errorf("CSRF token mismatch"))
@@ -71,7 +71,7 @@ func main() {
 	router.NoRoute(controllers.NotFound)
 	router.NoMethod(controllers.MethodNotAllowed)
 
-	if config.GetConfig().Server.SignUpEnabled {
+	if config.Config.Server.SignUpEnabled {
 		router.GET("/signup", controllers.SignUpGet)
 		router.POST("/signup", controllers.SignUpPost)
 	}
@@ -98,7 +98,7 @@ func main() {
 
 	//admin area
 	admin := router.Group("/admin")
-	admin.Use(controllers.AuthRequired(models.ADMIN))
+	admin.Use(middlewares.AuthRequired(models.ADMIN))
 	{
 		admin.POST("/upload", controllers.UploadPost) //image upload
 
@@ -168,7 +168,7 @@ func main() {
 
 	//manager area
 	manager := router.Group("/manager")
-	manager.Use(controllers.AuthRequired(models.MANAGER))
+	manager.Use(middlewares.AuthRequired(models.MANAGER))
 	{
 		manager.GET("/orders", controllers.OrderIndex)
 		manager.GET("/orders/:id", controllers.OrderGet)
@@ -178,7 +178,7 @@ func main() {
 
 	//customer area
 	customer := router.Group("/customer")
-	customer.Use(controllers.AuthRequired(models.CUSTOMER))
+	customer.Use(middlewares.AuthRequired(models.CUSTOMER))
 	{
 		customer.GET("/orders", controllers.OrderIndex)
 		customer.GET("/orders/:id", controllers.OrderGet)
