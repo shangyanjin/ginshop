@@ -31,12 +31,12 @@ func (t Time) MarshalJSON() ([]byte, error) {
 // Value 3. 为 Time 实现 Value 方法，写入数据库时会调用该方法将自定义时间类型转换并写入数据库；
 func (t Time) Value() (driver.Value, error) {
 	const (
-		Timestamp  = iota // 时间戳
+		TimeStamp  = iota // 时间戳
 		TimeString        // 时间字符串
 	)
 
-	var timeType = Timestamp
-	if timeType == TimeString {
+	var DefaultTimeType = TimeString
+	if DefaultTimeType == TimeString {
 		var zeroTime time.Time
 		if time.Time(t).Unix() == zeroTime.UnixNano() {
 			return nil, nil
