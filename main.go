@@ -29,9 +29,9 @@ func main() {
 
 	initLogger()
 	config.InitConfig()
-	models.InitMysql()
-	//models.InitSqlite()
-	models.AutoMigrate()
+	//models.InitMysql()
+	models.InitSqlite()
+	//models.AutoMigrate()
 	//models.SeedDB()
 	if *seed == "true" {
 		models.SeedDB()

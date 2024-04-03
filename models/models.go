@@ -44,7 +44,7 @@ func InitSqlite() {
 	)
 
 	// Open SQLite3 database connection using custom log configuration
-	db, err = gorm.Open(sqlite.Open("sqlite.db"), &gorm.Config{
+	db, err = gorm.Open(sqlite.Open("ginshop.db"), &gorm.Config{
 		Logger: newLogger, // Pass the logger configuration to GORM
 	})
 
