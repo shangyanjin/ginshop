@@ -10,10 +10,10 @@ import (
 	"strconv"
 	"time"
 
+	"ginshop/config"
+	"ginshop/models"
 	"github.com/gin-gonic/gin"
 	csrf "github.com/utrack/gin-csrf"
-	"goweb/config"
-	"goweb/models"
 )
 
 const userIDKey = "UserID"

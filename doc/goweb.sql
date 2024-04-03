@@ -5,7 +5,7 @@
  Source Server Type    : MySQL
  Source Server Version : 100509
  Source Host           : localhost:3306
- Source Schema         : goweb
+ Source Schema         : ginshop
 
  Target Server Type    : MySQL
  Target Server Version : 100509

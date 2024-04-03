@@ -3,9 +3,9 @@ package controllers
 import (
 	"net/http"
 
+	"ginshop/models"
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
-	"goweb/models"
 )
 
 // CartType represents cart hash map, stored in session cookie

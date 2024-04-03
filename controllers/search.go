@@ -5,8 +5,8 @@ import (
 	"net/http"
 	"strings"
 
+	"ginshop/models"
 	"github.com/gin-gonic/gin"
-	"goweb/models"
 )
 
 // SearchGet handles GET /search?search= route

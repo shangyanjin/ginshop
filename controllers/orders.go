@@ -9,8 +9,8 @@ import (
 	"path"
 	"strconv"
 
-	"goweb/config"
-	"goweb/models"
+	"ginshop/config"
+	"ginshop/models"
 
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"

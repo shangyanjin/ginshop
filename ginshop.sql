@@ -5,7 +5,7 @@
  Source Server Type    : MySQL
  Source Server Version : 100509
  Source Host           : localhost:3306
- Source Schema         : goweb
+ Source Schema         : ginshop
 
  Target Server Type    : MySQL
  Target Server Version : 100509
@@ -191,8 +191,8 @@ CREATE TABLE `pages`  (
 -- ----------------------------
 -- Records of pages
 -- ----------------------------
-INSERT INTO `pages` VALUES (1, '2023-12-11 18:51:52.275', '2023-12-11 18:51:52.275', NULL, 'Welcome To goweb Skeleton Project', '\n			<p>Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old. Richard McClintock, a Latin professor at Hampden-Sydney College in Virginia, looked up one of the more obscure Latin words, consectetur, from a Lorem Ipsum passage, and going through the cites of the word in classical literature, discovered the undoubtable source. Lorem Ipsum comes from sections 1.10.32 and 1.10.33 of \"de Finibus Bonorum et Malorum\" (The Extremes of Good and Evil) by Cicero, written in 45 BC. This book is a treatise on the theory of ethics, very popular during the Renaissance. The first line of Lorem Ipsum, \"Lorem ipsum dolor sit amet..\", comes from a line in section 1.10.32.</p>\n			<p>The standard chunk of Lorem Ipsum used since the 1500s is reproduced below for those interested. Sections 1.10.32 and 1.10.33 from \"de Finibus Bonorum et Malorum\" by Cicero are also reproduced in their exact original form, accompanied by English versions from the 1914 translation by H. Rackham.</p>\n			', '', 0, '', '');
-INSERT INTO `pages` VALUES (2, '2023-12-11 18:51:52.278', '2023-12-11 18:51:52.278', NULL, 'About goweb', 'goweb is a skeleton project for basic e-shop web-sites. It demonstrates user authentication, 3 user roles: admin, manager & customer, product cart & checkout, email notifications, user dashboard for all roles, some ui animations via Animate On Scroll library, bootstrap 4 template, home page carousel and may be something more...', '', 1, '', '');
+INSERT INTO `pages` VALUES (1, '2023-12-11 18:51:52.275', '2023-12-11 18:51:52.275', NULL, 'Welcome To ginshop Skeleton Project', '\n			<p>Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old. Richard McClintock, a Latin professor at Hampden-Sydney College in Virginia, looked up one of the more obscure Latin words, consectetur, from a Lorem Ipsum passage, and going through the cites of the word in classical literature, discovered the undoubtable source. Lorem Ipsum comes from sections 1.10.32 and 1.10.33 of \"de Finibus Bonorum et Malorum\" (The Extremes of Good and Evil) by Cicero, written in 45 BC. This book is a treatise on the theory of ethics, very popular during the Renaissance. The first line of Lorem Ipsum, \"Lorem ipsum dolor sit amet..\", comes from a line in section 1.10.32.</p>\n			<p>The standard chunk of Lorem Ipsum used since the 1500s is reproduced below for those interested. Sections 1.10.32 and 1.10.33 from \"de Finibus Bonorum et Malorum\" by Cicero are also reproduced in their exact original form, accompanied by English versions from the 1914 translation by H. Rackham.</p>\n			', '', 0, '', '');
+INSERT INTO `pages` VALUES (2, '2023-12-11 18:51:52.278', '2023-12-11 18:51:52.278', NULL, 'About ginshop', 'ginshop is a skeleton project for basic e-shop web-sites. It demonstrates user authentication, 3 user roles: admin, manager & customer, product cart & checkout, email notifications, user dashboard for all roles, some ui animations via Animate On Scroll library, bootstrap 4 template, home page carousel and may be something more...', '', 1, '', '');
 
 -- ----------------------------
 -- Table structure for products

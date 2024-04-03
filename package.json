@@ -1,5 +1,5 @@
 {
-  "name": "goweb",
+  "name": "ginshop",
   "version": "1.0.0",
   "description": "An e-shop web skeleton",
   "main": "",
@@ -38,13 +38,13 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://goweb.git"
+    "url": "git+https://ginshop.git"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://goweb/issues"
+    "url": "https://ginshop/issues"
   },
-  "homepage": "https://goweb#readme"
+  "homepage": "https://ginshop#readme"
 }

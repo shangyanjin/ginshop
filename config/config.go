@@ -2,38 +2,94 @@ package config
 
 import (
 	"fmt"
-	"github.com/spf13/viper"
 	"os"
 	"path"
 	"time"
+
+	"github.com/spf13/viper"
 )
 
-// Configs contains application configurations for all gin modes
-type Configs struct {
-	Debug   Config
-	Release Config
-}
+var Config ConfigConfiguration
 
 // Config contains application configuration for active gin mode
-type Config struct {
-	Public        string `json:"public"`
-	Domain        string `json:"domain"`
-	SessionSecret string `json:"session_secret"`
-	SignupEnabled bool   `json:"signup_enabled"` //always set to false in release mode (config.toml)
-	Database DatabaseConfig
-	SMTP     SMTPConfig
+type ConfigConfiguration struct {
+	Server   ServerConfiguration
+	Database DatabaseConfiguration
+	Redis    RedisConfiguration  `mapstructure:"redis"`
+	Jwt      JwtConfiguration    `mapstructure:"jwt"`
+	File     FileConfiguration   `mapstructure:"file"`
+	Mail     MailConfiguration   `mapstructure:"mail"`
+	Alipay   AlipayConfiguration `mapstructure:"alipay"`
+}
 
-	DBHost     string `mapstructure:"POSTGRES_HOST"`
-	DBUsername string `mapstructure:"POSTGRES_USER"`
-	DBPassword string `mapstructure:"POSTGRES_PASSWORD"`
-	DBName     string `mapstructure:"POSTGRES_DB"`
-	DBPort     string `mapstructure:"POSTGRES_PORT"`
+// ServerConfiguration contains server configuration
+type ServerConfiguration struct {
+	Host               string        `mapstructure:"host"`
+	Port               string        `mapstructure:"port"`
+	Mode               string        `mapstructure:"mode"`
+	Public             string        `mapstructure:"public"`
+	Domain             string        `mapstructure:"domain"`
+	SessionSecret      string        `mapstructure:"session_secret"`
+	SigningKey         string        `mapstructure:"signing_key"`
+	SignUpEnabled      bool          `mapstructure:"signup_enabled"`
+	PublicURL          string        `mapstructure:"publicurl"`
+	PublicPrefix       string        `mapstructure:"publicprefix"`
+	TokenSecret        string        `mapstructure:"token_secret"`
+	TokenExpiresIn     time.Duration `mapstructure:"token_expired_in"`
+	TokenMaxAge        int           `mapstructure:"token_maxage"`
+	GoogleClientID     string        `mapstructure:"google_client_id"`
+	GoogleClientSecret string        `mapstructure:"google_client_secret"`
+	InitSqlFile        string        `mapstructure:"init_sql_file"`
+}
 
-	ServerPort string `mapstructure:"PORT"`
+// DatabaseConfiguration contains database connection info
+type DatabaseConfiguration struct {
+	Host        string
+	Port        string
+	Db          string //database name
+	User        string
+	Password    string
+	TablePrefix string //table prefix
+}
 
-	TokenSecret    string        `mapstructure:"TOKEN_SECRET"`
-	TokenExpiresIn time.Duration `mapstructure:"TOKEN_EXPIRED_IN"`
-	TokenMaxAge    int           `mapstructure:"TOKEN_MAXAGE"`
+// MailConfiguration contains smtp mailer info
+type MailConfiguration struct {
+	From     string //from email
+	SMTP     string //smtp server address
+	Port     string //smtp port
+	User     string //smtp user login
+	Password string //smtp user password
+}
+
+// RedisConfiguration contains Redis connection info
+type RedisConfiguration struct {
+	Host     string `mapstructure:"host"`
+	Port     int    `mapstructure:"port"`
+	Password string `mapstructure:"password"`
+	Database int    `mapstructure:"database"`
+}
+
+// JwtConfiguration contains JWT configuration
+type JwtConfiguration struct {
+	SigningKey  string `mapstructure:"signing_key"`
+	ExpiredTime int    `mapstructure:"expired_time"`
+}
+
+// FileConfiguration contains file storage configuration
+type FileConfiguration struct {
+	Path string `mapstructure:"path"`
+}
+
+// AlipayConfiguration contains Alipay configuration
+type AlipayConfiguration struct {
+	AppId            string `mapstructure:"app_id"`
+	PrivateKey       string `mapstructure:"private_key"`
+	AppPublicCert    string `mapstructure:"app_public_cert"`
+	AlipayRootCert   string `mapstructure:"alipay_root_cert"`
+	AlipayPublicCert string `mapstructure:"alipay_public_cert"`
+	ReturnURL        string `mapstructure:"return_url"`
+	NotifyURL        string `mapstructure:"notify_url"`
+	TradePagePay     string `mapstructure:"trade_page_pay"`
 }
 
 // DatabaseConfig contains database connection info
@@ -54,48 +110,43 @@ type SMTPConfig struct {
 	Password string //smtp user password
 }
 
-// current loaded config
-var config Config
-
-
-func LoadConfig()  *Config{
-	viper.SetConfigName("config") // name of config file (without extension)
-	viper.SetConfigType("toml")   // REQUIRED if the config file does not have the extension in the name
-	viper.AddConfigPath(".")      // optionally look for config in the working directory
-	err := viper.ReadInConfig()   // Find and read the config file
-	if err != nil {               // Handle errors reading the config file
+func InitConfig() *ConfigConfiguration {
+	viper.SetConfigName("config.toml") // name of config file (without extension)
+	viper.SetConfigType("toml")        // REQUIRED if the config file does not have the extension in the name
+	viper.AddConfigPath(".")           // optionally look for config in the working directory
+	err := viper.ReadInConfig()        // Find and read the config file
+	if err != nil {                    // Handle errors reading the config file
 		panic(fmt.Errorf("Fatal error config file: %w \n", err))
 	}
 
-	err = viper.Unmarshal(&config)
+	err = viper.Unmarshal(&Config)
 	if err != nil {
 		panic(fmt.Errorf("unable to decode into struct, %v", err))
 	}
 
-	if !path.IsAbs(config.Public) {
+	if !path.IsAbs(Config.Server.Public) {
 		workingDir, err := os.Getwd()
 		if err != nil {
 			panic(err)
 		}
-		config.Public = path.Join(workingDir, config.Public)
+		Config.Server.Public = path.Join(workingDir, Config.Server.Public)
 	}
-	return &config
+	return &Config
 }
 
-
 // GetConfig returns actual config
-func GetConfig() *Config {
-	return &config
+func GetConfig() *ConfigConfiguration {
+	return &Config
 }
 
 // PublicPath returns path to application public folder
 func PublicPath() string {
-	return config.Public
+	return Config.Server.Public
 }
 
 // UploadsPath returns path to public/uploads folder
 func UploadsPath() string {
-	return path.Join(config.Public, "uploads")
+	return path.Join(Config.Server.Public, "uploads")
 }
 
 // GetConnectionString returns a database connection string
@@ -109,8 +160,8 @@ func GetConnectionString() string {
 	//)
 	//return dsn
 	return fmt.Sprintf("host=%s user=%s password=%s dbname=%s sslmode=disable",
-		config.Database.Host,
-		config.Database.User,
-		config.Database.Password,
-		config.Database.Db)
+		Config.Database.Host,
+		Config.Database.User,
+		Config.Database.Password,
+		Config.Database.Db)
 }

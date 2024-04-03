@@ -8,8 +8,8 @@ import (
 	"path"
 	"strconv"
 
-	"goweb/config"
-	"goweb/models"
+	"ginshop/config"
+	"ginshop/models"
 
 	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"

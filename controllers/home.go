@@ -3,8 +3,8 @@ package controllers
 import (
 	"net/http"
 
+	"ginshop/models"
 	"github.com/gin-gonic/gin"
-	"goweb/models"
 )
 
 // HomeGet handles GET / route

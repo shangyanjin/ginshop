@@ -1,7 +1,9 @@
+[server]
 public = "public"
-domain = "http://localhost:8081"
+domain = "http://localhost"
 session_secret = "session-secret-phrase"
 signup_enabled = true
+port = 80
 
 [database]
 host = "127.0.0.1"

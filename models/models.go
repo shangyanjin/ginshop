@@ -2,13 +2,13 @@ package models
 
 import (
 	"fmt"
+	"ginshop/config"
 	"github.com/fiam/gounidecode/unidecode"
 	"gorm.io/driver/mysql"
 	"gorm.io/driver/postgres"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
-	"goweb/config"
 	"log"
 	"os"
 	"regexp"

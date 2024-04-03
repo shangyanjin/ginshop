@@ -4,16 +4,17 @@ import (
 	"encoding/gob"
 	"flag"
 	"fmt"
+	"ginshop/config"
+	"ginshop/controllers"
+	"ginshop/models"
+	"net/http"
+
 	"github.com/claudiu/gocron"
 	"github.com/gin-contrib/sessions"
-	"github.com/gin-contrib/sessions/cookie"
+	"github.com/gin-contrib/sessions/memstore"
 	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
 	csrf "github.com/utrack/gin-csrf"
-	"goweb/config"
-	"goweb/controllers"
-	"goweb/models"
-	"net/http"
 )
 
 func main() {
@@ -44,17 +45,21 @@ func main() {
 	router := gin.Default()
 	router.StaticFS("/public", http.Dir(config.PublicPath())) //better use nginx to serve assets (Cache-Control, Etag, fast gzip, etc)
 	controllers.LoadTemplates(router)                         //load default
-
 	//setup sessions
 	conf := config.GetConfig()
-	store := cookie.NewStore([]byte(conf.SessionSecret))
+	//setup sessions
+	secretKey := conf.Server.SessionSecret
+	if len(secretKey) < 1 {
+		secretKey = "default-secret-key" //default secret key
+	}
+	store := memstore.NewStore([]byte(secretKey))
 	store.Options(sessions.Options{Path: "/", HttpOnly: true, MaxAge: 7 * 86400}) //Also set Secure: true if using SSL, you should though
-	router.Use(sessions.Sessions("goweb-session", store))
+	router.Use(sessions.Sessions("ginshop-session", store))
 	router.Use(controllers.ContextData())
 
 	//setup csrf protection
 	router.Use(csrf.Middleware(csrf.Options{
-		Secret: conf.SessionSecret,
+		Secret: conf.Server.SessionSecret,
 		ErrorFunc: func(c *gin.Context) {
 			logrus.Error("CSRF token mismatch")
 			controllers.ShowErrorPage(c, 400, fmt.Errorf("CSRF token mismatch"))
@@ -66,7 +71,7 @@ func main() {
 	router.NoRoute(controllers.NotFound)
 	router.NoMethod(controllers.MethodNotAllowed)
 
-	if config.GetConfig().SignupEnabled {
+	if config.GetConfig().Server.SignUpEnabled {
 		router.GET("/signup", controllers.SignUpGet)
 		router.POST("/signup", controllers.SignUpPost)
 	}

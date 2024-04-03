@@ -5,8 +5,8 @@ import (
 	"path"
 	"time"
 
-	"goweb/config"
-	"goweb/models"
+	"ginshop/config"
+	"ginshop/models"
 
 	"github.com/denisbakhtin/sitemap"
 	"github.com/sirupsen/logrus"

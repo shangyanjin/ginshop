@@ -5,10 +5,10 @@ import (
 	"net/http"
 	"net/url"
 
+	"ginshop/config"
+	"ginshop/models"
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
-	"goweb/config"
-	"goweb/models"
 )
 
 // ContextData stores in gin context the common data, such as user info...

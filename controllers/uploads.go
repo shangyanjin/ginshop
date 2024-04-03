@@ -9,7 +9,7 @@ import (
 	"path/filepath"
 	"time"
 
-	"goweb/config"
+	"ginshop/config"
 
 	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"

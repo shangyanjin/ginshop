@@ -1,4 +1,4 @@
-module goweb
+module ginshop
 
 go 1.22.0
 

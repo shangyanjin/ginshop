@@ -3,7 +3,7 @@ package controllers
 import (
 	"net/http"
 
-	"goweb/models"
+	"ginshop/models"
 
 	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"

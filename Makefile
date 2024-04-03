@@ -4,7 +4,7 @@ default: build
 
 build: clean vet
 	@echo "Building application"
-	@go build -o goweb-go
+	@go build -o ginshop-go
 
 doc:
 	@godoc -http=:6060 -index
@@ -21,7 +21,7 @@ debug_assets:
 debug: clean debug_server debug_assets 
 
 run: build
-	./goweb-go
+	./ginshop-go
 
 test:
 	@go test ./...
@@ -31,15 +31,15 @@ vet:
 
 clean:
 	@echo "Cleaning binary"
-	@rm -f ./goweb-go
+	@rm -f ./ginshop-go
 
 stop: 
-	@echo "Stopping goweb_go service"
-	@sudo systemctl stop goweb_go
+	@echo "Stopping ginshop_go service"
+	@sudo systemctl stop ginshop_go
 
 start:
-	@echo "Starting goweb_go service"
-	@sudo systemctl start goweb_go
+	@echo "Starting ginshop_go service"
+	@sudo systemctl start ginshop_go
 
 pull:
 	@echo "Pulling origin"

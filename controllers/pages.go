@@ -4,7 +4,7 @@ import (
 	"net/http"
 	"strings"
 
-	"goweb/models"
+	"ginshop/models"
 
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
