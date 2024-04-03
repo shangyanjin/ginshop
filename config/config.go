@@ -15,11 +15,11 @@ var Config ConfigConfiguration
 type ConfigConfiguration struct {
 	Server   ServerConfiguration
 	Database DatabaseConfiguration
-	Redis    RedisConfiguration  `mapstructure:"redis"`
-	Jwt      JwtConfiguration    `mapstructure:"jwt"`
-	File     FileConfiguration   `mapstructure:"file"`
-	Mail     MailConfiguration   `mapstructure:"mail"`
-	Alipay   AlipayConfiguration `mapstructure:"alipay"`
+	Redis    RedisConfiguration   `mapstructure:"redis"`
+	Jwt      JwtConfiguration     `mapstructure:"jwt"`
+	File     FileConfiguration    `mapstructure:"file"`
+	Mail     MailConfiguration    `mapstructure:"mail"`
+	Payment  PaymentConfiguration `mapstructure:"payment"`
 }
 
 // ServerConfiguration contains server configuration
@@ -80,16 +80,16 @@ type FileConfiguration struct {
 	Path string `mapstructure:"path"`
 }
 
-// AlipayConfiguration contains Alipay configuration
-type AlipayConfiguration struct {
-	AppId            string `mapstructure:"app_id"`
-	PrivateKey       string `mapstructure:"private_key"`
-	AppPublicCert    string `mapstructure:"app_public_cert"`
-	AlipayRootCert   string `mapstructure:"alipay_root_cert"`
-	AlipayPublicCert string `mapstructure:"alipay_public_cert"`
-	ReturnURL        string `mapstructure:"return_url"`
-	NotifyURL        string `mapstructure:"notify_url"`
-	TradePagePay     string `mapstructure:"trade_page_pay"`
+// PaymentConfiguration
+type PaymentConfiguration struct {
+	AppId         string `mapstructure:"app_id"`
+	AppPublicCert string `mapstructure:"app_public_cert"`
+	PrivateKey    string `mapstructure:"private_key"`
+	RootCert      string `mapstructure:"root_cert"`
+	PublicCert    string `mapstructure:"public_cert"`
+	ReturnURL     string `mapstructure:"return_url"`
+	NotifyURL     string `mapstructure:"notify_url"`
+	TradePagePay  string `mapstructure:"trade_page_pay"`
 }
 
 // DatabaseConfig contains database connection info
