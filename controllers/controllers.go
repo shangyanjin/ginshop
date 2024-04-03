@@ -17,7 +17,7 @@ import (
 	csrf "github.com/utrack/gin-csrf"
 )
 
-const userIDKey = "UserID"
+const UserIDKey = "UserID"
 
 var tmpl *template.Template
 

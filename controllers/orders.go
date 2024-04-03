@@ -162,7 +162,7 @@ func notifyAdminOfOrder(c *gin.Context, order *models.Order) {
 			return
 		}
 
-		smtp := config.Config.Server.SMTP
+		smtp := config.Config.Mail
 		msg := gomail.NewMessage()
 		msg.SetHeader("From", smtp.From)
 		msg.SetHeader("To", getSetting("order_email"))

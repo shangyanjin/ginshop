@@ -16,7 +16,7 @@ import (
 func ContextData() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		session := sessions.Default(c)
-		if uID := session.Get(controllers.userIDKey); uID != nil {
+		if uID := session.Get(controllers.UserIDKey); uID != nil {
 			user := models.User{}
 			models.GetDB().First(&user, uID)
 			if user.ID != 0 {
@@ -24,7 +24,7 @@ func ContextData() gin.HandlerFunc {
 			}
 		}
 
-		if config.GetConfig().SignupEnabled {
+		if config.Config.Server.SignUpEnabled {
 			c.Set("SignupEnabled", true)
 		}
 		c.Next()

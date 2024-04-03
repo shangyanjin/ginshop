@@ -41,7 +41,7 @@ func notifyAdminOfOrderConsult(c *gin.Context, orderconsult *models.OrderConsult
 			return
 		}
 
-		smtp := config.Config.Server.SMTP
+		smtp := config.Config.Mail
 		msg := gomail.NewMessage()
 		msg.SetHeader("From", smtp.From)
 		msg.SetHeader("To", getSetting("order_email"))

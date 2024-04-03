@@ -49,7 +49,7 @@ func SignInPost(c *gin.Context) {
 		return
 	}
 
-	session.Set(userIDKey, user.ID)
+	session.Set(UserIDKey, user.ID)
 	session.Save()
 	c.Redirect(http.StatusFound, panelEntryURL(user))
 }
@@ -105,7 +105,7 @@ func SignUpPost(c *gin.Context) {
 		return
 	}
 
-	session.Set(userIDKey, user.ID)
+	session.Set(UserIDKey, user.ID)
 	session.Save()
 	c.Redirect(http.StatusFound, "/")
 	return
@@ -114,7 +114,7 @@ func SignUpPost(c *gin.Context) {
 // SignoutGet handles GET /signout route
 func SignoutGet(c *gin.Context) {
 	session := sessions.Default(c)
-	session.Delete(userIDKey)
+	session.Delete(UserIDKey)
 	session.Save()
 	c.Redirect(http.StatusSeeOther, "/")
 }
