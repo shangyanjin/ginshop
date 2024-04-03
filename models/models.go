@@ -12,7 +12,8 @@ import (
 	"github.com/fiam/gounidecode/unidecode"
 	"gorm.io/driver/mysql"
 	"gorm.io/driver/postgres"
-	"gorm.io/driver/sqlite"
+	//"gorm.io/driver/sqlite"
+	gosqlite "github.com/glebarez/sqlite" // sqlite driver without cgo
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
 )
@@ -44,7 +45,7 @@ func InitSqlite() {
 	)
 
 	// Open SQLite3 database connection using custom log configuration
-	db, err = gorm.Open(sqlite.Open("ginshop.db"), &gorm.Config{
+	db, err = gorm.Open(gosqlite.Open("ginshop.db"), &gorm.Config{
 		Logger: newLogger, // Pass the logger configuration to GORM
 	})
 
