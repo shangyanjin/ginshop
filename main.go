@@ -186,8 +186,10 @@ func main() {
 		customer.POST("/manage", service.ManagePost)
 	}
 
+	port := config.GetInt("server.port", 8080)
+	logrus.Infof("Listening on port %d", port)
 	// Listen and server on 0.0.0.0:8081
-	router.Run(":80")
+	router.Run(fmt.Sprintf(":%d", port))
 }
 
 // initLogger initializes logrus logger with some defaults
