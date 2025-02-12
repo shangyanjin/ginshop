@@ -12,6 +12,7 @@ import (
 	"github.com/fiam/gounidecode/unidecode"
 	"gorm.io/driver/mysql"
 	"gorm.io/driver/postgres"
+
 	//"gorm.io/driver/sqlite"
 	gosqlite "github.com/glebarez/sqlite" // sqlite driver without cgo
 	"gorm.io/gorm"
@@ -62,11 +63,11 @@ func InitMysql() {
 	//	panic(err.Error())
 	//}
 	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8&parseTime=True&loc=Local",
-		config.Config.Database.User,
-		config.Config.Database.Password,
-		config.Config.Database.Host,
-		config.Config.Database.Port,
-		config.Config.Database.Db,
+		config.GetString("database.user"),
+		config.GetString("database.password"),
+		config.GetString("database.host"),
+		config.GetString("database.port"),
+		config.GetString("database.db"),
 	)
 	// Create a logger that outputs logs to standard output device and set log level to Info
 	newLogger := logger.New(
@@ -99,11 +100,11 @@ func InitMysql() {
 
 func InitPostgres() *gorm.DB {
 	sqlInfo := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=disable",
-		config.Config.Database.Host,
-		config.Config.Database.Port,
-		config.Config.Database.User,
-		config.Config.Database.Password,
-		config.Config.Database.Db)
+		config.GetString("database.host"),
+		config.GetString("database.port"),
+		config.GetString("database.user"),
+		config.GetString("database.password"),
+		config.GetString("database.db"))
 
 	db, err := gorm.Open(postgres.Open(sqlInfo), &gorm.Config{})
 	log.Println(err)

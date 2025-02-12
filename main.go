@@ -48,7 +48,7 @@ func main() {
 	service.LoadTemplates(router)                             //load default
 	//setup sessions
 	//setup sessions
-	secretKey := config.Config.Server.SessionSecret
+	secretKey := config.GetString("server.session_secret")
 	if len(secretKey) < 1 {
 		secretKey = "default-secret-key" //default secret key
 	}
@@ -71,7 +71,7 @@ func main() {
 	router.NoRoute(service.NotFound)
 	router.NoMethod(service.MethodNotAllowed)
 
-	if config.Config.Server.SignUpEnabled {
+	if config.GetBool("server.signup_enabled") {
 		router.GET("/signup", service.SignUpGet)
 		router.POST("/signup", service.SignUpPost)
 	}

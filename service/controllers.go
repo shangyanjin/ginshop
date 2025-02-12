@@ -190,7 +190,7 @@ func isCustomer(c *gin.Context) bool {
 
 // SignUpEnabled returns true if sign up is enabled by config
 func SignUpEnabled() bool {
-	return config.Config.Server.SignUpEnabled
+	return config.GetBool("server.signup_enabled")
 }
 
 // noescape unescapes html content
@@ -291,11 +291,11 @@ func productTitles() []string {
 }
 
 func cssVersion() string {
-	return fileVersion(path.Join(config.Config.Server.Public, "assets", "main.css"))
+	return fileVersion(path.Join(config.GetString("server.public"), "assets", "main.css"))
 }
 
 func jsVersion() string {
-	return fileVersion(path.Join(config.Config.Server.Public, "assets", "application.js"))
+	return fileVersion(path.Join(config.GetString("server.public"), "assets", "application.js"))
 }
 
 func fileVersion(path string) string {
@@ -312,7 +312,7 @@ func timeToString(t time.Time) string {
 }
 
 func domain() string {
-	return config.Config.Server.Domain
+	return config.GetString("server.domain")
 }
 
 // panelEntryPoint returns an entry point for authenticated users, same as panelEntryURL but with context

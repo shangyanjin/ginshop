@@ -15,8 +15,8 @@ import (
 // CreateXMLSitemap creates xml sitemap for search engines, and saves in public/sitemap folder
 func CreateXMLSitemap() {
 	logrus.Info("Starting XML sitemap generation")
-	folder := path.Join(config.Config.Server.Public, "sitemap")
-	domain := config.Config.Server.Domain
+	folder := path.Join(config.PublicPath(), "sitemap")
+	domain := config.GetString("server.domain")
 	now := time.Now()
 	items := make([]sitemap.Item, 1)
 	db := models.GetDB()

@@ -32,7 +32,7 @@ func notifyAdminOfOrderConsult(c *gin.Context, orderconsult *models.OrderConsult
 	go func() {
 		var b bytes.Buffer
 
-		domain := config.Config.Server.Domain
+		domain := config.GetString("server.domain")
 		tmpl := template.New("").Funcs(getFuncMap())
 		workingdir, _ := os.Getwd()
 		tmpl, _ = tmpl.ParseFiles(path.Join(workingdir, "default", "emails", "admin_orderconsult.gohtml"))
@@ -41,18 +41,17 @@ func notifyAdminOfOrderConsult(c *gin.Context, orderconsult *models.OrderConsult
 			return
 		}
 
-		smtp := config.Config.Mail
 		msg := gomail.NewMessage()
-		msg.SetHeader("From", smtp.From)
-		msg.SetHeader("To", getSetting("order_email"))
+		msg.SetHeader("From", config.GetString("mail.from"))
+		msg.SetHeader("To", config.GetString("order_email"))
 		msg.SetHeader("Subject", fmt.Sprintf("Consultation order on %s", domain))
 		msg.SetBody(
 			"text/html",
 			b.String(),
 		)
 
-		port, _ := strconv.Atoi(smtp.Port)
-		dialer := gomail.NewPlainDialer(smtp.SMTP, port, smtp.User, smtp.Password)
+		port, _ := strconv.Atoi(config.GetString("mail.port"))
+		dialer := gomail.NewPlainDialer(config.GetString("mail.smtp"), port, config.GetString("mail.user"), config.GetString("mail.password"))
 		sender, err := dialer.Dial()
 		if err != nil {
 			logrus.Error(err)

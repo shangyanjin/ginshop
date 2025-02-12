@@ -2,171 +2,221 @@ package config
 
 import (
 	"fmt"
+	"log"
 	"os"
 	"path"
+	"strconv"
+	"strings"
 	"time"
 
-	"github.com/spf13/viper"
+	"github.com/go-ini/ini"
+	"github.com/sirupsen/logrus"
+	"gorm.io/gorm"
 )
 
-var Config ConfigConfiguration
+var (
+	DB            *gorm.DB
+	DynamicConfig map[string]interface{}
+)
 
-// Config contains application configuration for active gin mode
-type ConfigConfiguration struct {
-	Server   ServerConfiguration
-	Database DatabaseConfiguration
-	Redis    RedisConfiguration   `mapstructure:"redis"`
-	Jwt      JwtConfiguration     `mapstructure:"jwt"`
-	File     FileConfiguration    `mapstructure:"file"`
-	Mail     MailConfiguration    `mapstructure:"mail"`
-	Payment  PaymentConfiguration `mapstructure:"payment"`
-}
+const (
+	PageSizeBackend = 10
+	DbMysql         = "mysql"
+	DbSqlite        = "sqlite"
+	DbPostgres      = "postgres"
 
-// ServerConfiguration contains server configuration
-type ServerConfiguration struct {
-	Host               string        `mapstructure:"host"`
-	Port               string        `mapstructure:"port"`
-	Mode               string        `mapstructure:"mode"`
-	Public             string        `mapstructure:"public"`
-	Domain             string        `mapstructure:"domain"`
-	SessionSecret      string        `mapstructure:"session_secret"`
-	SigningKey         string        `mapstructure:"signing_key"`
-	SignUpEnabled      bool          `mapstructure:"signup_enabled"`
-	PublicURL          string        `mapstructure:"publicurl"`
-	PublicPrefix       string        `mapstructure:"publicprefix"`
-	TokenSecret        string        `mapstructure:"token_secret"`
-	TokenExpiresIn     time.Duration `mapstructure:"token_expired_in"`
-	TokenMaxAge        int           `mapstructure:"token_maxage"`
-	GoogleClientID     string        `mapstructure:"google_client_id"`
-	GoogleClientSecret string        `mapstructure:"google_client_secret"`
-	InitSqlFile        string        `mapstructure:"init_sql_file"`
-}
+	UserIdKey     = "userId"
+	AdminIdKey    = "adminId"
+	UserTokenKey  = "token"
+	AdminTokenKey = "adminToken"
 
-// DatabaseConfiguration contains database connection info
-type DatabaseConfiguration struct {
-	Host        string
-	Port        string
-	Db          string //database name
-	User        string
-	Password    string
-	TablePrefix string //table prefix
-}
+	PackageName       = "model"
+	GenRootPath       = "./public/builder"
+	RemoveTablePrefix = 1
+)
 
-// MailConfiguration contains smtp mailer info
-type MailConfiguration struct {
-	From     string //from email
-	SMTP     string //smtp server address
-	Port     string //smtp port
-	User     string //smtp user login
-	Password string //smtp user password
-}
-
-// RedisConfiguration contains Redis connection info
-type RedisConfiguration struct {
-	Host     string `mapstructure:"host"`
-	Port     int    `mapstructure:"port"`
-	Password string `mapstructure:"password"`
-	Db       int    `mapstructure:"db"`
-}
-
-// JwtConfiguration contains JWT configuration
-type JwtConfiguration struct {
-	SigningKey  string `mapstructure:"signing_key"`
-	ExpiredTime int    `mapstructure:"expired_time"`
-}
-
-// FileConfiguration contains file storage configuration
-type FileConfiguration struct {
-	Path string `mapstructure:"path"`
-}
-
-// PaymentConfiguration
-type PaymentConfiguration struct {
-	AppId         string `mapstructure:"app_id"`
-	AppPublicCert string `mapstructure:"app_public_cert"`
-	PrivateKey    string `mapstructure:"private_key"`
-	RootCert      string `mapstructure:"root_cert"`
-	PublicCert    string `mapstructure:"public_cert"`
-	ReturnURL     string `mapstructure:"return_url"`
-	NotifyURL     string `mapstructure:"notify_url"`
-	TradePagePay  string `mapstructure:"trade_page_pay"`
-}
-
-// DatabaseConfig contains database connection info
-type DatabaseConfig struct {
-	Host     string
-	Port     string
-	Db       string //database name
-	User     string
-	Password string
-}
-
-// SMTPConfig contains smtp mailer info
-type SMTPConfig struct {
-	From     string //from email
-	SMTP     string //smtp server address
-	Port     string //smtp port
-	User     string //smtp user login
-	Password string //smtp user password
-}
+// ConfigSection is a type alias for a map of strings to interfaces
+type ConfigSection map[string]interface{}
 
 func init() {
-	InitConfig()
-
+	err := InitConfig()
+	if err != nil {
+		log.Fatalf("Error initializing config: %v", err)
+	}
 }
 
-func InitConfig() *ConfigConfiguration {
-	viper.SetConfigName("config.toml") // name of config file (without extension)
-	viper.SetConfigType("toml")        // REQUIRED if the config file does not have the extension in the name
-	viper.AddConfigPath(".")           // optionally look for config in the working directory
-	err := viper.ReadInConfig()        // Find and read the config file
-	if err != nil {                    // Handle errors reading the config file
-		panic(fmt.Errorf("Fatal error config file: %w \n", err))
-	}
-
-	err = viper.Unmarshal(&Config)
+func InitConfig() error {
+	conf := "config.ini"
+	cfg, err := ini.Load(conf)
 	if err != nil {
-		panic(fmt.Errorf("unable to decode into struct, %v", err))
+		return fmt.Errorf("failed to load config file: %w", err)
 	}
 
-	if !path.IsAbs(Config.Server.Public) {
+	DynamicConfig = make(map[string]interface{})
+
+	for _, section := range cfg.Sections() {
+		sectionName := section.Name()
+		if sectionName == ini.DefaultSection {
+			continue
+		}
+
+		sectionMap := make(ConfigSection)
+		for _, key := range section.Keys() {
+			sectionMap[key.Name()] = key.String()
+		}
+		DynamicConfig[sectionName] = sectionMap
+	}
+
+	// Ensure public path is absolute
+	publicPath := GetString("server.public")
+	if publicPath != "" && !path.IsAbs(publicPath) {
 		workingDir, err := os.Getwd()
 		if err != nil {
-			panic(err)
+			return fmt.Errorf("failed to get working directory: %w", err)
 		}
-		Config.Server.Public = path.Join(workingDir, Config.Server.Public)
+		if sectionMap, ok := DynamicConfig["server"].(ConfigSection); ok {
+			sectionMap["public"] = path.Join(workingDir, publicPath)
+		}
 	}
-	return &Config
-}
 
-// GetConfig returns actual config
-func GetConfig() *ConfigConfiguration {
-	return &Config
+	return nil
 }
 
 // PublicPath returns path to application public folder
 func PublicPath() string {
-	return Config.Server.Public
+	return GetString("server.public")
 }
 
-// UploadsPath returns path to public/uploads folder
+// GetUploadPath returns path to the img directory
+func GetUploadPath() string {
+	return path.Join(strings.TrimSpace(GetString("server.public")), "img")
+}
+
+// UploadsPath returns path to public/img folder
 func UploadsPath() string {
-	return path.Join(Config.Server.Public, "uploads")
+	return path.Join(GetString("server.public"), "img")
 }
 
 // GetConnectionString returns a database connection string
 func GetConnectionString() string {
-	//dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8&parseTime=True&loc=Local",
-	//	config.Database.User,
-	//	config.Database.Password,
-	//	config.Database.Host,
-	//	config.Database.Port,
-	//	config.Database.Name,
-	//)
-	//return dsn
-	return fmt.Sprintf("host=%s user=%s password=%s dbname=%s sslmode=disable",
-		Config.Database.Host,
-		Config.Database.User,
-		Config.Database.Password,
-		Config.Database.Db)
+	return fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8&parseTime=True&loc=Local",
+		GetString("mysql.user"),
+		GetString("mysql.password"),
+		GetString("mysql.host"),
+		GetString("mysql.port"),
+		GetString("mysql.db"),
+	)
+}
+
+func get(key string) interface{} {
+	parts := strings.Split(key, ".")
+	if len(parts) != 2 {
+		logrus.Warnf("Invalid config key format: %s (should be 'section.key')", key)
+		return nil
+	}
+	section, key := parts[0], parts[1]
+
+	sectionMap, ok := DynamicConfig[section]
+	if !ok {
+		logrus.Warnf("Config section not found: %s", section)
+		return nil
+	}
+
+	configSection, ok := sectionMap.(ConfigSection)
+	if !ok {
+		logrus.Warnf("Invalid section type for: %s", section)
+		return nil
+	}
+
+	value, exists := configSection[key]
+	if !exists {
+		logrus.Warnf("Config key not found: %s in section %s", key, section)
+		return nil
+	}
+
+	return value
+}
+
+func GetString(key string, defaultValue ...string) string {
+	if value := get(key); value != nil {
+		if str, ok := value.(string); ok {
+			return str
+		}
+	}
+	if len(defaultValue) > 0 {
+		return defaultValue[0]
+	}
+	return ""
+}
+
+func GetInt(key string, defaultValue ...int) int {
+	if value := get(key); value != nil {
+		if str, ok := value.(string); ok {
+			if i, err := strconv.Atoi(str); err == nil {
+				return i
+			}
+		}
+	}
+	if len(defaultValue) > 0 {
+		return defaultValue[0]
+	}
+	return 0
+}
+
+func GetBool(key string, defaultValue ...bool) bool {
+	if value := get(key); value != nil {
+		if str, ok := value.(string); ok {
+			b, err := strconv.ParseBool(str)
+			if err == nil {
+				return b
+			}
+		}
+	}
+	if len(defaultValue) > 0 {
+		return defaultValue[0]
+	}
+	return false
+}
+
+// Add helper functions for different types
+func GetDuration(key string, defaultValue ...time.Duration) time.Duration {
+	if value := get(key); value != nil {
+		if str, ok := value.(string); ok {
+			if d, err := time.ParseDuration(str); err == nil {
+				return d
+			}
+		}
+	}
+	if len(defaultValue) > 0 {
+		return defaultValue[0]
+	}
+	return 0
+}
+
+func GetFloat64(key string, defaultValue ...float64) float64 {
+	if value := get(key); value != nil {
+		if str, ok := value.(string); ok {
+			if f, err := strconv.ParseFloat(str, 64); err == nil {
+				return f
+			}
+		}
+	}
+	if len(defaultValue) > 0 {
+		return defaultValue[0]
+	}
+	return 0
+}
+
+func GetFloat(key string, defaultValue ...float32) float32 {
+	if value := get(key); value != nil {
+		if str, ok := value.(string); ok {
+			if f, err := strconv.ParseFloat(str, 32); err == nil {
+				return float32(f)
+			}
+		}
+	}
+	if len(defaultValue) > 0 {
+		return defaultValue[0]
+	}
+	return 0
 }

@@ -14,14 +14,14 @@ import (
 // RssGet handles GET /rss route
 func RssGet(c *gin.Context) {
 	now := time.Now()
-	domain := config.Config.Server.Domain
+	domain := config.GetString("server.domain")
 	db := models.GetDB()
 
 	feed := &feeds.Feed{
 		Title:       "ginshop skeleton",
 		Link:        &feeds.Link{Href: domain},
 		Description: "A gin-powered e-shop boilerplate",
-		Author:      &feeds.Author{Name: "ginshop Inc.", Email: getSetting("contact_email")},
+		Author:      &feeds.Author{Name: "ginshop Inc.", Email: config.GetString("contact_email")},
 		Created:     now,
 		Copyright:   "All rights reserved © ginshop",
 	}

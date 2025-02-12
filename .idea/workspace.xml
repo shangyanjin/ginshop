@@ -4,7 +4,20 @@
     <option name="autoReloadType" value="ALL" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="444f9f85-4f5a-4874-9913-59a8279370b9" name="Changes" comment="" />
+    <list default="true" id="444f9f85-4f5a-4874-9913-59a8279370b9" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config.toml" beforeDir="false" afterPath="$PROJECT_DIR$/config.ini" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config/config.go" beforeDir="false" afterPath="$PROJECT_DIR$/config/config.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/go.mod" beforeDir="false" afterPath="$PROJECT_DIR$/go.mod" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/go.sum" beforeDir="false" afterPath="$PROJECT_DIR$/go.sum" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/main.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/models/models.go" beforeDir="false" afterPath="$PROJECT_DIR$/models/models.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/service/controllers.go" beforeDir="false" afterPath="$PROJECT_DIR$/service/controllers.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/service/orderconsult.go" beforeDir="false" afterPath="$PROJECT_DIR$/service/orderconsult.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/service/orders.go" beforeDir="false" afterPath="$PROJECT_DIR$/service/orders.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/service/rss.go" beforeDir="false" afterPath="$PROJECT_DIR$/service/rss.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/service/sitemap.go" beforeDir="false" afterPath="$PROJECT_DIR$/service/sitemap.go" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />

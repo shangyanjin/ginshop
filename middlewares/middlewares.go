@@ -8,6 +8,7 @@ import (
 
 	"ginshop/config"
 	"ginshop/models"
+
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
 )
@@ -24,7 +25,7 @@ func ContextData() gin.HandlerFunc {
 			}
 		}
 
-		if config.Config.Server.SignUpEnabled {
+		if config.GetBool("server.signup_enabled") {
 			c.Set("SignupEnabled", true)
 		}
 		c.Next()
