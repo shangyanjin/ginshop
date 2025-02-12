@@ -2,7 +2,7 @@ package middlewares
 
 import (
 	"fmt"
-	"ginshop/controllers"
+	"ginshop/service"
 	"net/http"
 	"net/url"
 
@@ -16,7 +16,7 @@ import (
 func ContextData() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		session := sessions.Default(c)
-		if uID := session.Get(controllers.UserIDKey); uID != nil {
+		if uID := session.Get(service.UserIDKey); uID != nil {
 			user := models.User{}
 			models.GetDB().First(&user, uID)
 			if user.ID != 0 {

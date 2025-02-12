@@ -5,9 +5,9 @@ import (
 	"flag"
 	"fmt"
 	"ginshop/config"
-	"ginshop/controllers"
 	"ginshop/middlewares"
 	"ginshop/models"
+	"ginshop/service"
 	"net/http"
 
 	"github.com/claudiu/gocron"
@@ -19,7 +19,7 @@ import (
 )
 
 func main() {
-	gob.Register(controllers.CartType{})
+	gob.Register(service.CartType{})
 
 	seed := flag.String("seed", "false", "Seed database: true, false")
 	mode := flag.String("mode", "debug", "Application mode: debug, release, test")
@@ -38,14 +38,14 @@ func main() {
 	}
 
 	//Periodic tasks
-	gocron.Every(1).Day().Do(controllers.CreateXMLSitemap)
+	gocron.Every(1).Day().Do(service.CreateXMLSitemap)
 	gocron.Start()
 
 	// Creates a gin router with default middleware:
 	// logger and recovery (crash-free) middleware
 	router := gin.Default()
 	router.StaticFS("/public", http.Dir(config.PublicPath())) //better use nginx to serve assets (Cache-Control, Etag, fast gzip, etc)
-	controllers.LoadTemplates(router)                         //load default
+	service.LoadTemplates(router)                             //load default
 	//setup sessions
 	//setup sessions
 	secretKey := config.Config.Server.SessionSecret
@@ -62,128 +62,128 @@ func main() {
 		Secret: secretKey,
 		ErrorFunc: func(c *gin.Context) {
 			logrus.Error("CSRF token mismatch")
-			controllers.ShowErrorPage(c, 400, fmt.Errorf("CSRF token mismatch"))
+			service.ShowErrorPage(c, 400, fmt.Errorf("CSRF token mismatch"))
 			c.Abort()
 		},
 	}))
 
-	router.GET("/", controllers.HomeGet)
-	router.NoRoute(controllers.NotFound)
-	router.NoMethod(controllers.MethodNotAllowed)
+	router.GET("/", service.HomeGet)
+	router.NoRoute(service.NotFound)
+	router.NoMethod(service.MethodNotAllowed)
 
 	if config.Config.Server.SignUpEnabled {
-		router.GET("/signup", controllers.SignUpGet)
-		router.POST("/signup", controllers.SignUpPost)
+		router.GET("/signup", service.SignUpGet)
+		router.POST("/signup", service.SignUpPost)
 	}
-	router.GET("/signin", controllers.SignInGet)
-	router.POST("/signin", controllers.SignInPost)
-	router.GET("/signout", controllers.SignoutGet)
+	router.GET("/signin", service.SignInGet)
+	router.POST("/signin", service.SignInPost)
+	router.GET("/signout", service.SignoutGet)
 
-	router.GET("/pages/:idslug", controllers.PageGet)
-	router.GET("/c/:idslug", controllers.CategoryGet)
-	router.GET("/p/:idslug", controllers.ProductGet)
-	router.GET("/rss", controllers.RssGet)
+	router.GET("/pages/:idslug", service.PageGet)
+	router.GET("/c/:idslug", service.CategoryGet)
+	router.GET("/p/:idslug", service.ProductGet)
+	router.GET("/rss", service.RssGet)
 
-	router.GET("/cart", controllers.CartGet)
-	router.POST("/cart/add/:id", controllers.CartAdd)
-	router.POST("/cart/delete/:id", controllers.CartDelete)
+	router.GET("/cart", service.CartGet)
+	router.POST("/cart/add/:id", service.CartAdd)
+	router.POST("/cart/delete/:id", service.CartDelete)
 
-	router.GET("/new_order", controllers.OrderNew)
-	router.POST("/new_order", controllers.OrderCreate)
-	router.GET("/confirm_order/:id", controllers.OrderConfirm)
+	router.GET("/new_order", service.OrderNew)
+	router.POST("/new_order", service.OrderCreate)
+	router.GET("/confirm_order/:id", service.OrderConfirm)
 
-	router.GET("/search", controllers.SearchGet)
+	router.GET("/search", service.SearchGet)
 
-	router.POST("/orderconsult", controllers.OrderConsultPost)
+	router.POST("/orderconsult", service.OrderConsultPost)
 
 	//admin area
 	admin := router.Group("/admin")
 	admin.Use(middlewares.AuthRequired(models.ADMIN))
 	{
-		admin.POST("/upload", controllers.UploadPost) //image upload
+		admin.POST("/upload", service.UploadPost) //image upload
 
-		admin.GET("/users", controllers.UserIndex)
-		admin.GET("/new_user", controllers.UserNew)
-		admin.POST("/new_user", controllers.UserCreate)
-		admin.GET("/users/:id/edit", controllers.UserEdit)
-		admin.POST("/users/:id/edit", controllers.UserUpdate)
-		admin.POST("/users/:id/delete", controllers.UserDelete)
+		admin.GET("/users", service.UserIndex)
+		admin.GET("/new_user", service.UserNew)
+		admin.POST("/new_user", service.UserCreate)
+		admin.GET("/users/:id/edit", service.UserEdit)
+		admin.POST("/users/:id/edit", service.UserUpdate)
+		admin.POST("/users/:id/delete", service.UserDelete)
 
-		admin.GET("/pages", controllers.PageIndex)
-		admin.GET("/new_page", controllers.PageNew)
-		admin.POST("/new_page", controllers.PageCreate)
-		admin.GET("/pages/:id/edit", controllers.PageEdit)
-		admin.POST("/pages/:id/edit", controllers.PageUpdate)
-		admin.POST("/pages/:id/delete", controllers.PageDelete)
+		admin.GET("/pages", service.PageIndex)
+		admin.GET("/new_page", service.PageNew)
+		admin.POST("/new_page", service.PageCreate)
+		admin.GET("/pages/:id/edit", service.PageEdit)
+		admin.POST("/pages/:id/edit", service.PageUpdate)
+		admin.POST("/pages/:id/delete", service.PageDelete)
 
-		admin.GET("/menus", controllers.MenuIndex)
-		admin.GET("/new_menu", controllers.MenuNew)
-		admin.POST("/new_menu", controllers.MenuCreate)
-		admin.GET("/menu/:id/edit", controllers.MenuEdit)
-		admin.POST("/menu/:id/edit", controllers.MenuUpdate)
-		admin.POST("/menu/:id/delete", controllers.MenuDelete)
+		admin.GET("/menus", service.MenuIndex)
+		admin.GET("/new_menu", service.MenuNew)
+		admin.POST("/new_menu", service.MenuCreate)
+		admin.GET("/menu/:id/edit", service.MenuEdit)
+		admin.POST("/menu/:id/edit", service.MenuUpdate)
+		admin.POST("/menu/:id/delete", service.MenuDelete)
 
-		admin.GET("/menu/:id", controllers.MenuItemIndex)
-		admin.GET("/menu/:id/new_item", controllers.MenuItemNew)
-		admin.POST("/menu/:id/new_item", controllers.MenuItemCreate)
-		admin.GET("/menu/:id/edit/:itemid", controllers.MenuItemEdit)
-		admin.POST("/menu/:id/edit/:itemid", controllers.MenuItemUpdate)
-		admin.POST("/menu/:id/delete/:itemid", controllers.MenuItemDelete)
+		admin.GET("/menu/:id", service.MenuItemIndex)
+		admin.GET("/menu/:id/new_item", service.MenuItemNew)
+		admin.POST("/menu/:id/new_item", service.MenuItemCreate)
+		admin.GET("/menu/:id/edit/:itemid", service.MenuItemEdit)
+		admin.POST("/menu/:id/edit/:itemid", service.MenuItemUpdate)
+		admin.POST("/menu/:id/delete/:itemid", service.MenuItemDelete)
 
-		admin.GET("/categories", controllers.CategoryIndex)
-		admin.GET("/new_category", controllers.CategoryNew)
-		admin.POST("/new_category", controllers.CategoryCreate)
-		admin.GET("/categories/:id/edit", controllers.CategoryEdit)
-		admin.POST("/categories/:id/edit", controllers.CategoryUpdate)
-		admin.POST("/categories/:id/delete", controllers.CategoryDelete)
+		admin.GET("/categories", service.CategoryIndex)
+		admin.GET("/new_category", service.CategoryNew)
+		admin.POST("/new_category", service.CategoryCreate)
+		admin.GET("/categories/:id/edit", service.CategoryEdit)
+		admin.POST("/categories/:id/edit", service.CategoryUpdate)
+		admin.POST("/categories/:id/delete", service.CategoryDelete)
 
-		admin.GET("/products", controllers.ProductIndex)
-		admin.GET("/new_product", controllers.ProductNew)
-		admin.POST("/new_product", controllers.ProductCreate)
-		admin.GET("/products/:id/edit", controllers.ProductEdit)
-		admin.POST("/products/:id/edit", controllers.ProductUpdate)
-		admin.POST("/products/:id/delete", controllers.ProductDelete)
+		admin.GET("/products", service.ProductIndex)
+		admin.GET("/new_product", service.ProductNew)
+		admin.POST("/new_product", service.ProductCreate)
+		admin.GET("/products/:id/edit", service.ProductEdit)
+		admin.POST("/products/:id/edit", service.ProductUpdate)
+		admin.POST("/products/:id/delete", service.ProductDelete)
 
-		admin.POST("/new_image", controllers.ImageCreate)
-		admin.POST("/images/:id/delete", controllers.ImageDelete)
+		admin.POST("/new_image", service.ImageCreate)
+		admin.POST("/images/:id/delete", service.ImageDelete)
 
-		admin.GET("/settings", controllers.SettingIndex)
-		admin.GET("/new_setting", controllers.SettingNew)
-		admin.POST("/new_setting", controllers.SettingCreate)
-		admin.GET("/settings/:id/edit", controllers.SettingEdit)
-		admin.POST("/settings/:id/edit", controllers.SettingUpdate)
-		admin.POST("/settings/:id/delete", controllers.SettingDelete)
+		admin.GET("/settings", service.SettingIndex)
+		admin.GET("/new_setting", service.SettingNew)
+		admin.POST("/new_setting", service.SettingCreate)
+		admin.GET("/settings/:id/edit", service.SettingEdit)
+		admin.POST("/settings/:id/edit", service.SettingUpdate)
+		admin.POST("/settings/:id/delete", service.SettingDelete)
 
-		admin.GET("/orders", controllers.OrderIndex)
-		admin.GET("/orders/:id", controllers.OrderGet)
-		admin.POST("/orders/:id/delete", controllers.OrderDelete)
+		admin.GET("/orders", service.OrderIndex)
+		admin.GET("/orders/:id", service.OrderGet)
+		admin.POST("/orders/:id/delete", service.OrderDelete)
 
-		admin.GET("/slides", controllers.SlideIndex)
-		admin.GET("/new_slide", controllers.SlideNew)
-		admin.POST("/new_slide", controllers.SlideCreate)
-		admin.GET("/slides/:id/edit", controllers.SlideEdit)
-		admin.POST("/slides/:id/edit", controllers.SlideUpdate)
-		admin.POST("/slides/:id/delete", controllers.SlideDelete)
+		admin.GET("/slides", service.SlideIndex)
+		admin.GET("/new_slide", service.SlideNew)
+		admin.POST("/new_slide", service.SlideCreate)
+		admin.GET("/slides/:id/edit", service.SlideEdit)
+		admin.POST("/slides/:id/edit", service.SlideUpdate)
+		admin.POST("/slides/:id/delete", service.SlideDelete)
 	}
 
 	//manager area
 	manager := router.Group("/manager")
 	manager.Use(middlewares.AuthRequired(models.MANAGER))
 	{
-		manager.GET("/orders", controllers.OrderIndex)
-		manager.GET("/orders/:id", controllers.OrderGet)
-		manager.GET("/manage", controllers.ManageGet)
-		manager.POST("/manage", controllers.ManagePost)
+		manager.GET("/orders", service.OrderIndex)
+		manager.GET("/orders/:id", service.OrderGet)
+		manager.GET("/manage", service.ManageGet)
+		manager.POST("/manage", service.ManagePost)
 	}
 
 	//customer area
 	customer := router.Group("/customer")
 	customer.Use(middlewares.AuthRequired(models.CUSTOMER))
 	{
-		customer.GET("/orders", controllers.OrderIndex)
-		customer.GET("/orders/:id", controllers.OrderGet)
-		customer.GET("/manage", controllers.ManageGet)
-		customer.POST("/manage", controllers.ManagePost)
+		customer.GET("/orders", service.OrderIndex)
+		customer.GET("/orders/:id", service.OrderGet)
+		customer.GET("/manage", service.ManageGet)
+		customer.POST("/manage", service.ManagePost)
 	}
 
 	// Listen and server on 0.0.0.0:8081

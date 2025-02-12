@@ -1,10 +1,10 @@
-package controllers
+package service
 
 import (
 	"github.com/gin-gonic/gin"
 )
 
-//AdminGet handles GET /admin route
+// AdminGet handles GET /admin route
 func AdminGet(c *gin.Context) {
 	c.Redirect(302, "/admin/products")
 }
