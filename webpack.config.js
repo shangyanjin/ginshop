@@ -1,10 +1,13 @@
 const path = require('path');
-const LiveReloadPlugin = require('webpack-livereload-plugin');
+const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+const TerserPlugin = require("terser-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
-const UglifyJsPlugin = require("uglifyjs-webpack-plugin");
-const OptimizeCSSAssetsPlugin = require("optimize-css-assets-webpack-plugin");
+const CssMinimizerPlugin = require("css-minimizer-webpack-plugin");
+const CopyPlugin = require("copy-webpack-plugin");
+const dotenv = require('dotenv');
+
+dotenv.config();
 const devMode = process.env.NODE_ENV !== 'production';
-var CopyWebpackPlugin = require('copy-webpack-plugin');
 
 module.exports = {
     entry: './assets/js/application.js',
@@ -12,32 +15,31 @@ module.exports = {
         filename: 'application.js',
         path: path.resolve(__dirname, 'public/assets')
     },
-    devtool: "source-map",
+    devtool: devMode ? "source-map" : "hidden-source-map",
     watchOptions: {
         aggregateTimeout: 300,
         ignored: /node_modules/,
     },
     optimization: {
         minimizer: [
-            new UglifyJsPlugin({
+            new TerserPlugin({
                 cache: true,
                 parallel: true,
-                sourceMap: true // set to true if you want JS source maps
+                sourceMap: devMode
             }),
-            new OptimizeCSSAssetsPlugin({})
+            new CssMinimizerPlugin()
         ]
     },
     resolve: {
-        extensions: [
-            ".js"
-        ],
+        extensions: [".js"],
         modules: [
             path.resolve(__dirname, "scripts"),
             "node_modules"
         ]
     },
     module: {
-        rules: [{
+        rules: [
+            {
                 test: /\.js$/,
                 exclude: /node_modules/,
                 use: {
@@ -62,7 +64,6 @@ module.exports = {
             {
                 test: /\.scss$/,
                 use: [
-                    //devMode ? 'style-loader' : MiniCssExtractPlugin.loader,
                     MiniCssExtractPlugin.loader,
                     'css-loader',
                     'sass-loader',
@@ -72,26 +73,24 @@ module.exports = {
                 test: /\.(png|jpg|jpeg|gif|svg)$/,
                 use: 'url-loader?limit=25000'
             },
-
         ]
     },
-
     plugins: [
-        new LiveReloadPlugin({
-            appendScriptTag: devMode
-        }),
+        new CleanWebpackPlugin(),
         new MiniCssExtractPlugin({
             filename: "[name].css",
             chunkFilename: "[id].css"
         }),
-        new CopyWebpackPlugin([{
-                from: 'assets/images',
-                to: '../images'
-            },
-            {
-                from: 'assets/vendor',
-                to: '../vendor'
-            },
-        ]),
-    ]
+        new CopyPlugin({
+            patterns: [
+                { from: 'assets/images', to: '../images' },
+                { from: 'assets/vendor', to: '../vendor' }
+            ],
+        }),
+    ],
+    performance: {
+        hints: devMode ? "warning" : false,
+        maxEntrypointSize: 512000,
+        maxAssetSize: 512000
+    }
 };

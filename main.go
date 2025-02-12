@@ -187,7 +187,7 @@ func main() {
 	}
 
 	// Listen and server on 0.0.0.0:8081
-	router.Run(":8080")
+	router.Run(":80")
 }
 
 // initLogger initializes logrus logger with some defaults
